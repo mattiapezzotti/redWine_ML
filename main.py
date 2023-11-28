@@ -5,7 +5,10 @@ import matplotlib.pyplot as plt
 
 def main():
     df = pd.read_csv('winequality-red.csv')
+    df.drop_duplicates(inplace = True)
 
+    printBasicInfo(df)
+    
     plt.show()
     
 
@@ -17,15 +20,19 @@ def loadCorrelationHeatmap(df):
 def loadPairPlot(df):
     sns.pairplot(df, hue="quality", height=1.5, corner=True)
 
-def getBasicInfo(df):
+def printBasicInfo(df):
     output = open("output.txt", "w")
+
     output.write("----HEAD----\n\n" 
-                 + df.head(10).to_string() 
-                 + "\n\n"
-                )
+                 + df.head(10).to_string())
     
-    output.write("----INFO----\n\n")
+    output.write("\n\n----INFO----\n\n")
     df.info(buf=output)
+
+    output.write("\n\n----NULL VALUES----\n\n" 
+                 + df.isnull().sum().to_string())
+    
+
     output.close()
 
     
