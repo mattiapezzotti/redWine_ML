@@ -1,0 +1,10 @@
+----QUALITY COUNT----
+
+quality
+5    577
+6    535
+7    167
+4     53
+8     17
+3     10
+Name: count, dtype: int64
