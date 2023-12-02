@@ -170,5 +170,23 @@ df.corr()['quality']
 
 Notiamo che ci sono delle **forti correlazioni** tra alcuni elementi e la qualità del vino, cosa che noi non vogliamo avere.
 
+# PCA
+Il dataset è ovviamente di grande dimensioni (11), cerchiamo di trovare quali sono effettivamente utili cosi da ridurne la complessità.
+Per evitare che le correlazioni tra variabili possano influenzare i risultati, prima di applicare PCA, standardizziamo i risultati.
 
+```python
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(df[columns])
+```
 
+E applichiamo PCA
+
+```python
+pca = PCA(n_components=11).fit(scaled_data)
+```
+
+Studiando i risultati in un grafico:
+
+![](images/pca.png)
+
+Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 7.

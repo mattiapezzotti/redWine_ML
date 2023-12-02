@@ -12,7 +12,7 @@ def main():
     #df = dfAnalysis(df)
     columns = [col for col in df.columns if(col != "quality")]
 
-    loadCorrelationHeatmap(df)
+    studyPCA(df, columns)
 
     #pcaData = applyPCA(df, columns)
 
@@ -55,7 +55,7 @@ def studyPCA(df, columns):
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(df[columns])
 
-    pca = PCA(n_components=10).fit(scaled_data) 
+    pca = PCA(n_components=11).fit(scaled_data) 
     plt.plot(range(1, pca.n_components_ + 1), pca.explained_variance_ratio_)
     plt.xlabel('Componenti')
     plt.ylabel('Varianza')
