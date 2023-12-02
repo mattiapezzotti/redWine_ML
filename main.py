@@ -9,10 +9,12 @@ from sklearn.preprocessing import StandardScaler
 def main():
     df = pd.read_csv('winequality-red.csv')
 
-    df = dfAnalysis(df)
+    #df = dfAnalysis(df)
     columns = [col for col in df.columns if(col != "quality")]
-    
-    pcaData = applyPCA(df, columns)
+
+    loadCorrelationHeatmap(df)
+
+    #pcaData = applyPCA(df, columns)
 
     plt.show()
     
@@ -32,7 +34,7 @@ def dfAnalysis(df):
     output.write("\n\n----DUPLICATED VALUES----\n\n" 
                 + str(df.duplicated().sum()))
     
-    if(df.duplicated().sum() > 0):
+    if(df.duplicated().sum() > 300):
         output.write("\n\ndropping duplicates...")
         df.drop_duplicates(inplace = True)
         df.reset_index(drop=True)
@@ -87,7 +89,5 @@ def loadDistributionPlot(df, columns):
 def loadCountPlot(df, target):
     sns.countplot(df, x=target, palette = "flare")
 
-
-    
 if __name__ == "__main__":
     main()
