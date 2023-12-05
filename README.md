@@ -6,7 +6,7 @@
 Il Gruppo è formato da:
 - Mattia Pezzotti (885965) - m.pezzotti3@campus.unimib.it
 - Thomas Howard-Grubb (869248) - t.howardgrubb@campus.unimib.it
-- NOME COGNOME (MAT) - email@campus.unimib.it
+- Alaa Eddine Ghanimi (856573) - a.ghanimi@campus.unimib.it
 
 ## Introduzione al Dataset
 [Link](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009) al dataset su Kaggle.
