@@ -129,6 +129,8 @@ df.describe().T
 |        quality       | 1599.0 |  5.636023 | 0.807569  | 3.00000 | 5.0000  | 6.00000  | 6.000000  | 8.00000   |
 
 Notiamo subito che, nonostante i voti potessero essere da 0 a 10, esistono solo voti tra il 3 e l'8. Analizziamo meglio *quality*.
+
+### Studio della qualità
     
 ```python
 df["quality"].value_counts()
@@ -148,6 +150,12 @@ df["quality"].value_counts()
 Come vediamo, c'è un forte **central bias**, i giudici non si esponevano troppo nelle loro valutazioni e tendevano a giudicare con un valore centrale.
 Per questo possiamo dire che un vino è **Buono** se è di qualità *6.5* o superiore.
 
+Possiamo studiare la qualità in due modi:
+- *Singolarmente*, quindi utilizzando i valori originali
+- *Categorizzando*, avendo solo 6 qualità contigue, possiamo unire a due a due, trasformando la qualità in "scadente" (3-4), "normale" (5-6), "ottimo" (7-8).
+
+#### Studio utilizzando le sei qualità
+
 ```python
 df.corr()['quality']
 ```
@@ -166,27 +174,51 @@ df.corr()['quality']
 | total sulfur dioxide | -0.185100 |
 | volatile acidity     | -0.390558 |
 
-![](images/qualityCorr.png)
+![](images/qualityCorrHM.png)
 
 Notiamo che ci sono delle **forti correlazioni** tra alcuni elementi e la qualità del vino, cosa che noi non vogliamo avere.
 
-# PCA
+![](images/qualityCorrBox.png)
+
+Notiamo che ci sono notevoli **Outlier** tra alcuni elementi, cosa che noi non vogliamo avere.
+
+#### Studio con categorie
+
+```python
+df["qualityRange"] = pd.cut(df["quality"], bins=[-np.inf, 4, 6, np.inf], labels=["3-4","5-6","7-8"])
+```
+
+![](images/qualityCatCorrBox.png)
+
+## PCA
 Il dataset è ovviamente di grande dimensioni (11), cerchiamo di trovare quali sono effettivamente utili cosi da ridurne la complessità.
-Per evitare che le correlazioni tra variabili possano influenzare i risultati, prima di applicare PCA, standardizziamo i risultati.
+Per evitare che le correlazioni tra variabili possano influenzare i risultati, prima di applicare PCA, standardizziamo i risultati e riduciamo la dimensione del dataset.
 
 ```python
 scaler = StandardScaler()
 scaled_data = scaler.fit_transform(df[columns])
+
+x_train, x_test, y_train, y_test = train_test_split(scaled_data, qualityColumn, test_size = 0.25, random_state=42)
+
+pca = PCA(n_components=None)
+    
+x_train = pca.fit_transform(x_train)
+x_test = pca.transform(x_test)
+explained_variance = pca.explained_variance_ratio_
 ```
 
-E applichiamo PCA
+La **explained variance** è quindi:
 
 ```python
-pca = PCA(n_components=11).fit(scaled_data)
+[0.27590, 0.17191, 0.13659, 0.11815, 0.09029, 0.06029, 0.05433, 0.03969, 0.031056, 0.01621, 0.00555]
 ```
 
 Studiando i risultati in un grafico:
 
 ![](images/pca.png)
 
-Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 7.
+Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 6.
+
+```python
+newDF = PCA(n_components=6).fit_transform(scaled_data)
+```

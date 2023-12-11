@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import sklearn as sk
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 def main():
     df = pd.read_csv('winequality-red.csv')
@@ -12,8 +13,16 @@ def main():
     #df = dfAnalysis(df)
     columns = [col for col in df.columns if(col != "quality")]
 
-    studyPCA(df, columns)
+    plt.figure(figsize=(14,len(columns)*3))
 
+    #loadQualityCorrHP(df, columns)
+    #loadQualityCorrBP(df, columns)
+    #loadQualityCorrHM(df)
+
+    #loadCategorizedQualityCorrBP(df, columns)
+    #loadCategorizedQualityCorrHM(df)
+
+    studyPCA(df, columns)
     #pcaData = applyPCA(df, columns)
 
     plt.show()
@@ -51,43 +60,76 @@ def dfAnalysis(df):
     output.close()
     return df
 
+def loadCategorizedQualityCorrBP(df, columns):
+    df["qualityRange"] = pd.cut(df["quality"], bins=[-np.inf, 4, 6, np.inf], labels=["3-4","5-6","7-8"])
+    for i,column in enumerate(columns):
+        plt.subplot( len( columns ) // 2 + 1, 2, i + 1 )
+        sns.boxplot(x="qualityRange", y=column, data=df,palette="flare")
+        plt.title(f"{column} Distribution")
+    plt.tight_layout()
+    plt.savefig('qualityCatCorrBox.png')
+
+def loadCategorizedQualityCorrHM(df):
+    df["quality"] = pd.cut(df["quality"], bins=[-np.inf, 4, 6, np.inf], labels=["3-4","5-6","7-8"])
+    plt.figure(figsize=(14,14))
+    corrMatrix = df.corr(numeric_only=True)
+    heatmapMask = np.triu(np.ones_like(corrMatrix))
+    sns.heatmap(corrMatrix, linewidths=1, annot=True, fmt=".1f", vmin=-1, vmax=1, cmap=sns.color_palette("vlag"), mask=heatmapMask)
+    plt.tight_layout()
+    plt.savefig("images/qualityCatCorrHM.png")
+
+def loadQualityCorrHM(df):
+    plt.figure(figsize=(14,14))
+    corrMatrix = df.corr()
+    heatmapMask = np.triu(np.ones_like(corrMatrix))
+    sns.heatmap(corrMatrix, linewidths=1, annot=True, fmt=".1f", vmin=-1, vmax=1, cmap=sns.color_palette("vlag"), mask=heatmapMask)
+    plt.tight_layout()
+    plt.savefig("images/qualityCorrHM.png")
+
+def loadPairPlot(df):
+    sns.pairplot(df, hue="quality", height=1.5, corner=True)
+
+def loadQualityCorrBP(df, columns):
+    for i, column in enumerate(columns):
+        plt.subplot( len( columns ) // 2 + 1, 2, i + 1 )
+        sns.boxplot( x = "quality", y = column, data = df, palette="flare")
+    plt.tight_layout()
+    plt.savefig("images/qualityCorrBox.png")
+
+def loadQualityCorrHP(df, columns):
+    for i,column in enumerate(columns):
+        plt.subplot( len( columns ) // 2 + 1, 2, i + 1)
+        sns.histplot( x = column, hue = "quality", data=df, kde=True, palette="Spectral")
+    plt.tight_layout()
+    plt.savefig("images/qualityHistPlot.png")
+    
+def loadCountPlot(df, target):
+    sns.countplot(df, x=target, palette = "flare")
+
 def studyPCA(df, columns):
+    qualityColumn = df['quality']
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(df[columns])
+    x_train, x_test, y_train, y_test = train_test_split(scaled_data, qualityColumn, test_size = 0.25, random_state=42)
 
-    pca = PCA(n_components=11).fit(scaled_data) 
-    plt.plot(range(1, pca.n_components_ + 1), pca.explained_variance_ratio_)
+    pca = PCA(n_components=None)
+    
+    x_train = pca.fit_transform(x_train)
+    x_test = pca.transform(x_test)
+    explained_variance = pca.explained_variance_ratio_
+
+    print(sorted(explained_variance, reverse = True))
+
+    plt.plot(range(1, pca.n_components_ + 1), explained_variance)
     plt.xlabel('Componenti')
     plt.ylabel('Varianza')
 
 def applyPCA(df, columns):
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(df[columns])
-    pcaData = PCA(n_components=7).fit_transform(scaled_data)
+    pcaData = PCA(n_components=6).fit_transform(scaled_data)
 
     return pcaData
-
-
-def loadCorrelationHeatmap(df):
-    corrMatrix = df.corr()
-    heatmapMask = np.triu(np.ones_like(corrMatrix))
-    sns.heatmap(corrMatrix, linewidths=1, annot=True, fmt=".1f", vmin=-1, vmax=1, cmap=sns.color_palette("vlag"), mask=heatmapMask)
-
-def loadPairPlot(df):
-    sns.pairplot(df, hue="quality", height=1.5, corner=True)
-
-def loadBoxPlot(df, columns):
-    for i, column in enumerate(columns):
-        plt.subplot( len( columns ) // 2 + 1, 2, i + 1 )
-        sns.boxplot( x = "quality", y = column, data = df, palette="flare")
-
-def loadDistributionPlot(df, columns):
-    for i,column in enumerate(columns):
-        plt.subplot( len( columns ) // 2 + 1, 2, i + 1)
-        sns.histplot( x = column, hue = "quality", data=df, kde=True, palette="Spectral")
-    
-def loadCountPlot(df, target):
-    sns.countplot(df, x=target, palette = "flare")
 
 if __name__ == "__main__":
     main()
