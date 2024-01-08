@@ -1,6 +1,8 @@
 # Red Wine Quality
 
 [Link](https://github.com/mattiapezzotti/redWine_ML) alla repo del progetto su Github.
+[Link](https://docs.google.com/presentation/d/1yS_XVYV8o1SeP-sSjj_MmTjzXpVmW0dQCYPWyuINcmc/edit?usp=sharing) alla presentazione.
+
 
 ## Membri del Gruppo
 Il Gruppo è formato da:
