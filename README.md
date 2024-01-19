@@ -224,3 +224,29 @@ Vediamo come non tutte le componenti sono fondamentali per lo studio della quali
 ```python
 newDF = PCA(n_components=6).fit_transform(scaled_data)
 ```
+
+# Previsione quality usando DecisionTree e SVM
+
+Possiamo utilizzare il lavoro svolto fino ad ora per allenare dei modelli che riescano a prevedere se un vino è "good" (quality da 7-8) o "bad" (quality da 3-6).
+
+## Preparazione dataframe
+
+Come primo step dobbiamo aggiungere al dataframe pcaData l'attributo qualityRange:
+```python
+quality_mapping = {
+    3: "bad",
+    4: "bad",
+    5: "bad",
+    6: "bad",
+    7: "good",
+    8: "good"
+}
+
+df["qualityRange"] = quality_df["quality"].map(quality_mapping).astype('category')
+newdf = pd.concat([pcaData, df['qualityRange']], axis=1)
+```
+Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo attributo "qualityRange".
+
+### Ribilanciamento del dataframe
+
+Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
