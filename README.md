@@ -247,6 +247,32 @@ newdf = pd.concat([pcaData, df['qualityRange']], axis=1)
 ```
 Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo attributo "qualityRange".
 
+### Primo allenamento DecisionTree
+Se proviamo ad allenare un modello DecisionTree come segue:
+
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+X = newdf.iloc[:, :-1]
+y = newdf['qualityRange']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.26, random_state=42)
+
+tree_classifier = DecisionTreeClassifier(random_state=10)
+
+tree_classifier.fit(X_train, y_train)
+
+y_pred = tree_classifier.predict(X_test)
+
+print(classification_report(y_test, y_pred))
+```
+
+Otteniamo iseguenti risultati:
+
+Il modello come vediamo è poco capace di riconoscere elementi di tipo "good", questo potrebbe essere dovuto a un dataset sbilanciato che va controllato ed eventualmente corretto.
+
 ### Ribilanciamento del dataframe
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
