@@ -265,3 +265,80 @@ X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
 ```
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe ora è bilanciato:
+![](images/balancedDataFrame.png)
+
+Possiamo quindi inziare ad allenare dei modelli.
+
+## DecisionTree
+
+Iniziamo allenando un modello di albero decisionale usando il nostro dataframe.
+Divideremo il set di dati in 3 parti:
+-training set (0.3 del dataframe)
+-validation set (0.3 del dataframe rimanente)
+-test set (il restante dataframe)
+
+```python
+X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=10)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=10)
+```
+Alleniamo il modello come segue:
+
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+
+tree_classifier = DecisionTreeClassifier(random_state=10)
+
+tree_classifier.fit(X_train, y_train)
+
+y_train_pred = tree_classifier.predict(X_train)
+
+y_val_pred = tree_classifier.predict(X_val)
+
+y_test_pred = tree_classifier.predict(X_test)
+
+print("Training Set Performance:")
+print(classification_report(y_train, y_train_pred))
+
+print("Validation Set Performance:")
+print(classification_report(y_val, y_val_pred))
+
+print("Test Set Performance:")
+print(classification_report(y_test, y_test_pred))
+```
+
+Otteniamo i seguenti risultati:
+
+Training Set Performance:
+              precision    recall  f1-score   support
+
+         bad       1.00      1.00      1.00       957
+        good       1.00      1.00      1.00       977
+
+    accuracy                           1.00      1934
+   macro avg       1.00      1.00      1.00      1934
+weighted avg       1.00      1.00      1.00      1934
+
+Validation Set Performance:
+              precision    recall  f1-score   support
+
+         bad       0.91      0.84      0.87       303
+        good       0.84      0.91      0.87       278
+
+    accuracy                           0.87       581
+   macro avg       0.87      0.87      0.87       581
+weighted avg       0.88      0.87      0.87       581
+
+Test Set Performance:
+              precision    recall  f1-score   support
+
+         bad       0.89      0.89      0.89       122
+        good       0.90      0.89      0.89       127
+
+    accuracy                           0.89       249
+   macro avg       0.89      0.89      0.89       249
+weighted avg       0.89      0.89      0.89       249
+
+
