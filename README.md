@@ -509,4 +509,6 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 
+![](images/DTvsVSM.png)
+
 Rappresentando le curve ROC dei due modelli sullo stesso diagramma possiamo osservare come la VSM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good".
