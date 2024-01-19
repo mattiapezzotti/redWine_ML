@@ -310,7 +310,7 @@ print(classification_report(y_test, y_test_pred))
 ```
 
 Otteniamo i seguenti risultati:
-
+'''
 Training Set Performance:
               precision    recall  f1-score   support
 
@@ -340,5 +340,6 @@ Test Set Performance:
     accuracy                           0.89       249
    macro avg       0.89      0.89      0.89       249
 weighted avg       0.89      0.89      0.89       249
+'''
 
 
