@@ -217,8 +217,8 @@ Studiando i risultati in un grafico:
 
 ![](images/pca.png)
 
-Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 6.
+Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 8.
 
 ```python
-newDF = PCA(n_components=6).fit_transform(scaled_data)
+newDF = PCA(n_components=8).fit_transform(scaled_data)
 ```
