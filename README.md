@@ -409,3 +409,104 @@ y_test_pred = svm_classifier.predict(X_test)
 print("Test Set Performance:")
 print(classification_report(y_test, y_test_pred))
 ```
+
+![](images/vsmResult.png)
+
+![](images/vsmROC.png)
+
+Il risultato è decisamente un buon punto di inizio, performando bene su tutti i set in modo stabile. Tuttavia potrebbe essere migliorato applicando GridSearch:
+
+```python
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+from imblearn.over_sampling import SMOTE
+import pandas as pd
+
+X = newdf.iloc[:, :-1]
+y = newdf['qualityRange']
+
+smote = SMOTE()
+X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
+
+X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=42)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
+
+svm_classifier = SVC(random_state=42)
+
+param_grid = {
+    'C': [0.1, 1, 10],
+    'kernel': ['linear', 'rbf', 'poly'],
+    'gamma': ['scale', 'auto']
+}
+
+svm_grid = GridSearchCV(svm_classifier, param_grid, cv=3, scoring='roc_auc')
+
+svm_grid.fit(X_train, y_train)
+
+print("Best Parameters:", svm_grid.best_params_)
+
+y_train_pred = svm_grid.predict(X_train)
+
+print("Training Set Performance:")
+print(classification_report(y_train, y_train_pred))
+
+y_val_pred = svm_grid.predict(X_val)
+
+print("Validation Set Performance:")
+print(classification_report(y_val, y_val_pred))
+
+y_test_pred = svm_grid.predict(X_test)
+
+print("Test Set Performance:")
+print(classification_report(y_test, y_test_pred))
+```
+
+I risultati del nuovo allenamento sono i seguenti:
+
+![](images/vsmGSResult.png)
+
+![](images/vsmGSROC.png)
+
+Possiamo osservare che con i nuovi parametri si ottiene un modello che mostra una performance superiori su tutti i set. Precisione, recall e F1-score sonon anche più elevati.
+
+## Confronto tra i modelli trovati
+
+Proviamo ora a confrontare i due modelli allenati:
+
+```python
+
+from sklearn.metrics import roc_curve, roc_auc_score
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+
+label_encoder = LabelEncoder()
+y_test_binary = label_encoder.fit_transform(y_test)
+
+y_pred_prob_grid = grid_search.predict_proba(X_test)[:, 1]
+
+fpr_grid, tpr_grid, thresholds_grid = roc_curve(y_test_binary, y_pred_prob_grid)
+roc_auc_grid = roc_auc_score(y_test_binary, y_pred_prob_grid)
+
+decision_values_svm = svm_grid.decision_function(X_test)
+
+y_pred_prob_svm = (decision_values_svm - decision_values_svm.min()) / (decision_values_svm.max() - decision_values_svm.min())
+
+fpr_svm, tpr_svm, thresholds_svm = roc_curve(y_test_binary, y_pred_prob_svm)
+roc_auc_svm = roc_auc_score(y_test_binary, y_pred_prob_svm)
+
+plt.plot(fpr_grid, tpr_grid, label='Decision Tree (area = %0.2f)' % roc_auc_grid)
+plt.plot(fpr_svm, tpr_svm, label='SVM (area = %0.2f)' % roc_auc_svm)
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc="lower right")
+plt.show()
+```
+
+Rappresentando le curve ROC dei due modelli sullo stesso diagramma possiamo osservare come la VSM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good".
