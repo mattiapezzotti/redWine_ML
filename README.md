@@ -367,3 +367,41 @@ print(classification_report(y_test, y_test_pred))
 print("Cross-Validation Scores:")
 print(cv_scores)
 ```
+I risultati ottenuti saranno i seguenti:
+
+Quello che possiamo osservare è che c'è un miglioramento per quanto riguarda la generalizzazione del modello.
+
+## VSM
+
+```python
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report
+
+X = newdf.iloc[:, :-1]
+y = newdf['qualityRange']
+
+smote = SMOTE()
+X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
+
+X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=42)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
+
+svm_classifier = SVC(random_state=42)
+
+svm_classifier.fit(X_train, y_train)
+
+y_train_pred = svm_classifier.predict(X_train)
+
+print("Training Set Performance:")
+print(classification_report(y_train, y_train_pred))
+
+y_val_pred = svm_classifier.predict(X_val)
+
+print("Validation Set Performance:")
+print(classification_report(y_val, y_val_pred))
+
+y_test_pred = svm_classifier.predict(X_test)
+
+print("Test Set Performance:")
+print(classification_report(y_test, y_test_pred))
+```
