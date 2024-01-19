@@ -312,8 +312,58 @@ print(classification_report(y_test, y_test_pred))
 
 Otteniamo i seguenti risultati:
 
+![](images/DTnoGS.png)
+
 ![](images/DTroc.png)
 
-I risultati del modello sono positivi, tuttavia osservando la perfetta training set performance e la differenza abbastanza grande tra training set performance e la validation set permormance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. Noi useremo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC.
+I risultati del modello sono positivi, tuttavia osservando la perfetta training set performance e la differenza abbastanza grande tra training set performance e la validation set permormance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. Noi useremo GridSearch che permette di trovare gli hyperparameters ottimizzando il valore di AUC:
 
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import classification_report
+from sklearn.model_selection import cross_val_score
 
+X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=10)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=10)
+
+tree_classifier = DecisionTreeClassifier()
+
+param_grid = {
+    'max_features': [ 'sqrt', 'log2'],
+    'min_samples_split': [2,5,10, 15, 22,25, 24, 23, 30, 42, 50],
+    'min_samples_leaf': [1, 2, 4, 5, 6, 7, 8],
+    'max_depth': [None, 5, 10, 15, 20]
+}
+
+grid_search = GridSearchCV(tree_classifier, param_grid, cv=10, scoring='roc_auc')
+
+grid_search.fit(X_train, y_train)
+
+best_params = grid_search.best_params_
+
+best_tree_classifier = DecisionTreeClassifier(random_state=42, **best_params)
+best_tree_classifier.fit(X_train, y_train)
+
+y_train_pred = best_tree_classifier.predict(X_train)
+
+y_val_pred = best_tree_classifier.predict(X_val)
+
+y_test_pred = best_tree_classifier.predict(X_test)
+
+cv_scores = cross_val_score(best_tree_classifier, X_train_resampled, y_train_resampled, cv=10, scoring='roc_auc')
+
+print("Best Parameters:", best_params)
+
+print("Training Set Performance:")
+print(classification_report(y_train, y_train_pred))
+
+print("Validation Set Performance:")
+print(classification_report(y_val, y_val_pred))
+
+print("Test Set Performance:")
+print(classification_report(y_test, y_test_pred))
+
+print("Cross-Validation Scores:")
+print(cv_scores)
+```
