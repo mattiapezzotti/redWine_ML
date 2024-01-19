@@ -369,6 +369,10 @@ print(cv_scores)
 ```
 I risultati ottenuti saranno i seguenti:
 
+![](images/DTGS.png)
+
+![](images/DTGSROC.png)
+
 Quello che possiamo osservare è che c'è un miglioramento per quanto riguarda la generalizzazione del modello.
 
 ## VSM
