@@ -312,6 +312,7 @@ print(classification_report(y_test, y_test_pred))
 
 Otteniamo i seguenti risultati:
 
+![](images/DTroc.png)
 
 I risultati del modello sono positivi, tuttavia osservando la perfetta training set performance e la differenza abbastanza grande tra training set performance e la validation set permormance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. Noi useremo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC.
 
