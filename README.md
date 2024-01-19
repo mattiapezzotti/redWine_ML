@@ -265,6 +265,7 @@ X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
 ```
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe ora è bilanciato:
+
 ![](images/balancedDataFrame.png)
 
 Possiamo quindi inziare ad allenare dei modelli.
@@ -310,36 +311,8 @@ print(classification_report(y_test, y_test_pred))
 ```
 
 Otteniamo i seguenti risultati:
-'''
-Training Set Performance:
-              precision    recall  f1-score   support
 
-         bad       1.00      1.00      1.00       957
-        good       1.00      1.00      1.00       977
 
-    accuracy                           1.00      1934
-   macro avg       1.00      1.00      1.00      1934
-weighted avg       1.00      1.00      1.00      1934
-
-Validation Set Performance:
-              precision    recall  f1-score   support
-
-         bad       0.91      0.84      0.87       303
-        good       0.84      0.91      0.87       278
-
-    accuracy                           0.87       581
-   macro avg       0.87      0.87      0.87       581
-weighted avg       0.88      0.87      0.87       581
-
-Test Set Performance:
-              precision    recall  f1-score   support
-
-         bad       0.89      0.89      0.89       122
-        good       0.90      0.89      0.89       127
-
-    accuracy                           0.89       249
-   macro avg       0.89      0.89      0.89       249
-weighted avg       0.89      0.89      0.89       249
-'''
+I risultati del modello sono positivi, tuttavia osservando la perfetta training set performance e la differenza abbastanza grande tra training set performance e la validation set permormance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. Noi useremo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC.
 
 
