@@ -250,3 +250,4 @@ Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo a
 ### Ribilanciamento del dataframe
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
+![](images/download.png)
