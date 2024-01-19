@@ -250,4 +250,18 @@ Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo a
 ### Ribilanciamento del dataframe
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
-![](images/download.png)
+![](images/unbalancedDataFrame.png)
+
+Per risolvere eseguiamo SMOTE (Synthetic Minority Over-sampling Technique) per fare oversampling. Meglio eseguire un oversampling rispetto a undersampling in modo da non avere perdita perdita di informazione. Abbiamo scelto SMOTE perchè crea dati nuovi ipotetici, senza copiare quelli che già abbiamo.
+
+```python
+from imblearn.over_sampling import SMOTE
+
+X = newdf.iloc[:, :-1]
+y = newdf['qualityRange']
+
+smote = SMOTE()
+X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
+```
+
+Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe ora è bilanciato:
