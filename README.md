@@ -219,7 +219,7 @@ Studiando i risultati in un grafico:
 
 ![](images/pca.png)
 
-Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 6.
+Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 8.
 
 ```python
 newDF = PCA(n_components=6).fit_transform(scaled_data)
@@ -252,7 +252,8 @@ Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo a
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
 ![](images/unbalancedDataFrame.png)
 
-Per risolvere eseguiamo SMOTE (Synthetic Minority Over-sampling Technique) per fare oversampling. Meglio eseguire un oversampling rispetto a undersampling in modo da non avere perdita perdita di informazione. Abbiamo scelto SMOTE perchè crea dati nuovi ipotetici, senza copiare quelli che già abbiamo.
+Per risolvere eseguiamo SMOTE (Synthetic Minority Over-sampling Technique) per fare oversampling. SMOTE è una tecnica statistica che permette di aumentare il numero di casi nel set di dati in modo bilanciato. Crea nuove istanze a partire da casi di minoranza esistenti.
+Meglio eseguire un oversampling rispetto a undersampling in modo da non avere perdita perdita di informazione. Abbiamo scelto SMOTE perchè Non modifica il numero di casi di maggioranza e crea dati nuovi ipotetici, senza copiare quelli che già abbiamo.
 
 ```python
 from imblearn.over_sampling import SMOTE
