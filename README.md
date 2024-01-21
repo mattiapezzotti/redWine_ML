@@ -578,4 +578,6 @@ Tuttavia il DecisionTree perfoma meglio a livello di tempo:
 
 ![](images/Screenshot2024-01-21151306.png)
 
-#Conclusioni
+# Conclusioni
+
+Abbiamo allenato due modelli (DesitionTree e SVM) con buoni risultati. Confrontandoli la SVM che abbiamo allenato performa meglio sul nostro set di dati sia dal punto di vista di AUC (Area Under Curve) sia dal punto di vista di instervallo di accuratezza. Tutto ciò però con un tempo di allenamento leggermente superiore rispetto al DecisionTree. Nel contesto del nostro lavoro tuttavia questo non è importante, in quanto è preferibile una migliore classificazione a partire dai dati di input rispetto a migliore performance al livello di tempo.
