@@ -271,7 +271,7 @@ print(classification_report(y_test, y_pred))
 
 Otteniamo iseguenti risultati:
 
-![](images/DecisionTree1.png)
+![](images/Screenshot 2024-01-21 150842.png)
 
 Il modello come vediamo fatica a riconoscere con precisione gli elementi di tipo "good", questo potrebbe essere dovuto a un dataset sbilanciato che va controllato ed eventualmente corretto.
 
