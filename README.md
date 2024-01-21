@@ -271,12 +271,14 @@ print(classification_report(y_test, y_pred))
 
 Otteniamo iseguenti risultati:
 
-Il modello come vediamo è poco capace di riconoscere elementi di tipo "good", questo potrebbe essere dovuto a un dataset sbilanciato che va controllato ed eventualmente corretto.
+![](images/DecisionTree1.png)
+
+Il modello come vediamo fatica a riconoscere con precisione gli elementi di tipo "good", questo potrebbe essere dovuto a un dataset sbilanciato che va controllato ed eventualmente corretto.
 
 ### Ribilanciamento del dataframe
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
-![](images/unbalancedDataFrame.png)
+![](images/distributionBeforeSMOTE.png)
 
 Per risolvere eseguiamo SMOTE (Synthetic Minority Over-sampling Technique) per fare oversampling. SMOTE è una tecnica statistica che permette di aumentare il numero di casi nel set di dati in modo bilanciato. Crea nuove istanze a partire da casi di minoranza esistenti.
 Meglio eseguire un oversampling rispetto a undersampling in modo da non avere perdita perdita di informazione. Abbiamo scelto SMOTE perchè Non modifica il numero di casi di maggioranza e crea dati nuovi ipotetici, senza copiare quelli che già abbiamo.
@@ -293,7 +295,7 @@ X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
 
 Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe ora è bilanciato:
 
-![](images/balancedDataFrame.png)
+![](images/distributionAfterSMOTE.png)
 
 Possiamo quindi inziare ad allenare dei modelli.
 
@@ -301,15 +303,15 @@ Possiamo quindi inziare ad allenare dei modelli.
 
 Iniziamo allenando un modello di albero decisionale usando il nostro dataframe.
 Divideremo il set di dati in 3 parti:
--training set (0.3 del dataframe)
--validation set (0.3 del dataframe rimanente)
--test set (il restante dataframe)
+-training set
+-validation set
+-test set
 
 ```python
 X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=10)
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=10)
 ```
-Alleniamo il modello come segue:
+Alleniamo il DecisionTree come segue:
 
 ```python
 from sklearn.tree import DecisionTreeClassifier
@@ -339,7 +341,7 @@ print(classification_report(y_test, y_test_pred))
 
 Otteniamo i seguenti risultati:
 
-![](images/DTnoGS.png)
+![](images/Screenshot 2024-01-21 150842.png)
 
 ![](images/DTroc.png)
 
