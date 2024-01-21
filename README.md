@@ -228,6 +228,7 @@ newDF = PCA(n_components=8).fit_transform(scaled_data)
 # Previsione quality usando DecisionTree e SVM
 
 Possiamo utilizzare il lavoro svolto fino ad ora per allenare dei modelli che riescano a prevedere se un vino è "good" (quality da 7-8) o "bad" (quality da 3-6).
+##Scelta di DecisionTree e SVM
 
 ## Preparazione dataframe
 
@@ -271,7 +272,7 @@ print(classification_report(y_test, y_pred))
 
 Otteniamo iseguenti risultati:
 
-![](images/Screenshot 2024-01-21 150842.png)
+![](images/Screenshot2024-01-21150842.png)
 
 Il modello come vediamo fatica a riconoscere con precisione gli elementi di tipo "good", questo potrebbe essere dovuto a un dataset sbilanciato che va controllato ed eventualmente corretto.
 
@@ -341,9 +342,9 @@ print(classification_report(y_test, y_test_pred))
 
 Otteniamo i seguenti risultati:
 
-![](images/Screenshot 2024-01-21 150842.png)
+![](images/Screenshot2024-01-21151022.png)
 
-![](images/DTroc.png)
+![](images/DecisionTree1.png)
 
 I risultati del modello sono positivi, tuttavia osservando la perfetta training set performance e la differenza abbastanza grande tra training set performance e la validation set permormance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. Noi useremo GridSearch che permette di trovare gli hyperparameters ottimizzando il valore di AUC:
 
@@ -398,13 +399,16 @@ print(cv_scores)
 ```
 I risultati ottenuti saranno i seguenti:
 
-![](images/DTGS.png)
+![](images/Screenshot2024-01-21151053.png)
 
-![](images/DTGSROC.png)
+![](images/DecisionTree2.png)
 
-Quello che possiamo osservare è che c'è un miglioramento per quanto riguarda la generalizzazione del modello.
+Quello che possiamo osservare è che il modello generalizza meglio il dataset.
+Procediamo con l'allenamento della SVM.
 
-## VSM
+## SVM
+
+Alleniamo il modello come segue:
 
 ```python
 from sklearn.svm import SVC
@@ -438,12 +442,13 @@ y_test_pred = svm_classifier.predict(X_test)
 print("Test Set Performance:")
 print(classification_report(y_test, y_test_pred))
 ```
+I risultati che otteniamo da traing, validation e testing sono i seguenti
 
-![](images/vsmResult.png)
+![](images/Screenshot2024-01-21151131.png)
 
-![](images/vsmROC.png)
+![](images/SVM1.png)
 
-Il risultato è decisamente un buon punto di inizio, performando bene su tutti i set in modo stabile. Tuttavia potrebbe essere migliorato applicando GridSearch:
+Il risultato è decisamente un buon punto di inizio, performando bene su tutti i set in modo stabile, non è presente overfitting. Tuttavia potrebbe essere migliorato applicando GridSearch:
 
 ```python
 from sklearn.svm import SVC
@@ -494,15 +499,16 @@ print(classification_report(y_test, y_test_pred))
 
 I risultati del nuovo allenamento sono i seguenti:
 
-![](images/vsmGSResult.png)
+![](images/Screenshot2024-01-21151144.png)
 
-![](images/vsmGSROC.png)
+![](images/SVM2.png)
 
-Possiamo osservare che con i nuovi parametri si ottiene un modello che mostra una performance superiori su tutti i set. Precisione, recall e F1-score sonon anche più elevati.
+Possiamo osservare che con i nuovi parametri si ottiene un modello che mostra una performance superiore su tutti i set. Precisione, recall e F1-score sonon anche più elevati.
+Valore AUC migliorato indica che il modello ha migliorato la sua capacità di discriminare tra le classi.
 
 ## Confronto tra i modelli trovati
 
-Proviamo ora a confrontare i due modelli allenati:
+Proviamo ora a confrontare i due modelli allenati, DecisionTree (con gridsearch) e SVM (con gridsearch):
 
 ```python
 
@@ -538,6 +544,13 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 
-![](images/DTvsVSM.png)
+![](images/Comparison.png)
 
-Rappresentando le curve ROC dei due modelli sullo stesso diagramma possiamo osservare come la VSM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good".
+![](images/Comparison2.png)
+
+Rappresentando le curve ROC dei due modelli sullo stesso diagramma possiamo osservare come la SVM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul dataset rispetto al DecisionTree.
+Tuttavia il DecisionTree perfoma meglio a livello di tempo:
+
+![](images/Screenshot2024-01-21151306.png)
+
+#Conclusioni
