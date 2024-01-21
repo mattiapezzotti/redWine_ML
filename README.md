@@ -338,6 +338,7 @@ print(classification_report(y_val, y_val_pred))
 
 print("Test Set Performance:")
 print(classification_report(y_test, y_test_pred))
+
 ```
 
 Otteniamo i seguenti risultati:
@@ -353,11 +354,12 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
+from time import time
 
 X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=10)
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=10)
 
-tree_classifier = DecisionTreeClassifier()
+tree_classifier1 = DecisionTreeClassifier()
 
 param_grid = {
     'max_features': [ 'sqrt', 'log2'],
@@ -366,14 +368,18 @@ param_grid = {
     'max_depth': [None, 5, 10, 15, 20]
 }
 
-grid_search = GridSearchCV(tree_classifier, param_grid, cv=10, scoring='roc_auc')
-
+grid_search = GridSearchCV(tree_classifier1, param_grid, cv=10, scoring='roc_auc')
 grid_search.fit(X_train, y_train)
+
 
 best_params = grid_search.best_params_
 
 best_tree_classifier = DecisionTreeClassifier(random_state=42, **best_params)
+start_time = time()
 best_tree_classifier.fit(X_train, y_train)
+end_time = time()
+dt_training_time = end_time - start_time
+
 
 y_train_pred = best_tree_classifier.predict(X_train)
 
@@ -381,9 +387,6 @@ y_val_pred = best_tree_classifier.predict(X_val)
 
 y_test_pred = best_tree_classifier.predict(X_test)
 
-cv_scores = cross_val_score(best_tree_classifier, X_train_resampled, y_train_resampled, cv=10, scoring='roc_auc')
-
-print("Best Parameters:", best_params)
 
 print("Training Set Performance:")
 print(classification_report(y_train, y_train_pred))
@@ -394,8 +397,6 @@ print(classification_report(y_val, y_val_pred))
 print("Test Set Performance:")
 print(classification_report(y_test, y_test_pred))
 
-print("Cross-Validation Scores:")
-print(cv_scores)
 ```
 I risultati ottenuti saranno i seguenti:
 
@@ -441,6 +442,7 @@ y_test_pred = svm_classifier.predict(X_test)
 
 print("Test Set Performance:")
 print(classification_report(y_test, y_test_pred))
+
 ```
 I risultati che otteniamo da traing, validation e testing sono i seguenti
 
@@ -467,6 +469,7 @@ X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
 X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=42)
 X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
 
+
 svm_classifier = SVC(random_state=42)
 
 param_grid = {
@@ -479,22 +482,33 @@ svm_grid = GridSearchCV(svm_classifier, param_grid, cv=3, scoring='roc_auc')
 
 svm_grid.fit(X_train, y_train)
 
-print("Best Parameters:", svm_grid.best_params_)
 
-y_train_pred = svm_grid.predict(X_train)
+best_params_svm = svm_grid.best_params_
+best_svm_classifier = SVC(random_state=42, **best_params_svm)
+
+start_time = time()
+best_svm_classifier.fit(X_train, y_train)
+end_time = time()
+svm_training_time = end_time - start_time
+
+
+
+y_train_pred = best_svm_classifier.predict(X_train)
 
 print("Training Set Performance:")
 print(classification_report(y_train, y_train_pred))
 
-y_val_pred = svm_grid.predict(X_val)
+y_val_pred = best_svm_classifier.predict(X_val)
 
 print("Validation Set Performance:")
 print(classification_report(y_val, y_val_pred))
 
-y_test_pred = svm_grid.predict(X_test)
+y_test_pred = best_svm_classifier.predict(X_test)
 
 print("Test Set Performance:")
 print(classification_report(y_test, y_test_pred))
+
+
 ```
 
 I risultati del nuovo allenamento sono i seguenti:
@@ -516,20 +530,17 @@ from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 
-label_encoder = LabelEncoder()
-y_test_binary = label_encoder.fit_transform(y_test)
 
-y_pred_prob_grid = grid_search.predict_proba(X_test)[:, 1]
+fpr_grid, tpr_grid, thresholds = roc_curve(y_test_binary1, y_pred_prob1)
 
-fpr_grid, tpr_grid, thresholds_grid = roc_curve(y_test_binary, y_pred_prob_grid)
-roc_auc_grid = roc_auc_score(y_test_binary, y_pred_prob_grid)
+roc_auc_grid = roc_auc_score(y_test_binary1, y_pred_prob1)
 
-decision_values_svm = svm_grid.decision_function(X_test)
 
-y_pred_prob_svm = (decision_values_svm - decision_values_svm.min()) / (decision_values_svm.max() - decision_values_svm.min())
 
-fpr_svm, tpr_svm, thresholds_svm = roc_curve(y_test_binary, y_pred_prob_svm)
-roc_auc_svm = roc_auc_score(y_test_binary, y_pred_prob_svm)
+fpr_svm, tpr_svm, thresholds2 = roc_curve(y_test_binary2, y_pred_prob2)
+
+roc_auc_svm = roc_auc_score(y_test_binary2, y_pred_prob2)
+
 
 plt.plot(fpr_grid, tpr_grid, label='Decision Tree (area = %0.2f)' % roc_auc_grid)
 plt.plot(fpr_svm, tpr_svm, label='SVM (area = %0.2f)' % roc_auc_svm)
@@ -542,6 +553,7 @@ plt.ylabel('True Positive Rate')
 plt.title('Receiver Operating Characteristic (ROC) Curve')
 plt.legend(loc="lower right")
 plt.show()
+
 ```
 
 ![](images/Comparison.png)
