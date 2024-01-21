@@ -405,6 +405,8 @@ I risultati ottenuti saranno i seguenti:
 ![](images/DecisionTree2.png)
 
 Quello che possiamo osservare è che il modello generalizza meglio il dataset.
+![](images/DecisionTree1graph.png) ![](images/DecisionTree2graph.png)
+
 Procediamo con l'allenamento della SVM.
 
 ## SVM
