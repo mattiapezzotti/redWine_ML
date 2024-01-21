@@ -299,7 +299,18 @@ Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe ora 
 ![](images/distributionAfterSMOTE.png)
 
 Possiamo quindi inziare ad allenare dei modelli.
+## Descrizione e motivazione dei modelli di machine learning scelti
 
+I modelli scelti per l'allenamento sono il DecisionTree e la SVM (Suport Vector Machine).
+
+Gli alberi di decisione possono lavorare con attributi continui, come nel caso del nostro dataset. Possono inoltre catturare relazioni non lineari tra gli attributi.
+
+Le SVM invece possono gestire anche loro lavorare con attributi continui in modo efficace. Attraverso la mappatura delle caratteristiche di input in uno spazio dimensionale superiore riescono anche loro a catturare relazioni complesse tra gli attributi.
+
+Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè l'accuratezza potrebbe non essere una buona metrica su un dataset sbilanciato, che il nostro come vedremo è tale.
+Inoltre il valore AUC e la curva ROC tengono conto della trade-off tra tasso di vera positività e tasso di falsi positivi, una buona indicazione della performance dei nostri modelli. 
+Infine le curve ROC vedremo che ci saranno utili per fare confronti diretti tra due modelli allenati.
+ 
 ## DecisionTree
 
 Iniziamo allenando un modello di albero decisionale usando il nostro dataframe.
