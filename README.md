@@ -265,7 +265,7 @@ Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo a
 ### Primo allenamento DecisionTree
 Se proviamo ad allenare un modello DecisionTree senza tuning degli iperparametri otteniamo i seguenti risultati:
 
-![](images/Screenshot2024-01-21150842.png)
+![](images/1.png)
 
 Il modello ha dei risultati buoni per quanto riguarda le previsioni dei vini "bad", tuttavia fatica a riconoscere con accuratezza i vini di tipo "good".
 Questo potrebbe essere dovuto dal fatto che il nostro dataset sia sbilanciato. Andremo quindi ad analizzare la curva precision-recall per avere un'idea migliore della situazione.
@@ -279,33 +279,33 @@ La curva Precision-Recall mostra il tradeoff tra precision e recall per diversi 
 
 Punteggi elevati per entrambi indicano che il classificatore restituisce risultati accurati (alta precisione) e restituisce la maggior parte di tutti i risultati positivi (alto richiamo). Tuttavia, nel nostro caso, per il target "good" abbiamo un valore basso sia per la recall che per la precision.
 
-![](images/distributionBeforeSMOTE.png)
+![](images/2.png)
+Un valore di AUC pari a 0.564 è considerato basso.
 
 ### Applicazione di SMOTE
 Il nostro dataset è quindi sbilanciato. Per risolvere questo problema si è deciso di attuare la politica di oversampling SMOTE in modo da ribilanciare il traininng set senza ripetere elementi già esistenti, ma creandone di nuovi.
 
 Ribilinciando il training set evitiamo la contaminazione del processo di testing con dati sintetici.
 
-![](images/distributionBeforeSMOTE.png)
+![](images/3.png)
 
 Applichiamo quindi SMOTE al training set e otteniamo la seguente distribuzione sul training set:
 
-![](images/distributionAfterSMOTE.png)
+![](images/4.png)
 
-Adesso che il nostro training set è bilanciato alleniamo il Decision Tree:
+Adesso che il nostro training set è bilanciato alleniamo il Decision Tree.
 
 ## DecisionTree
 
 Allenando di nuovo il modello otteniamo i seguenti risultati:
 
-![](images/Screenshot2024-01-21151022.png)
+![](images/5.png)
 
-![](images/DecisionTree1.png)
 Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. 
 
 Usiamo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC. Cercheremo il migliore valore di AUC (Area Under Curve) perchè quando si affronta un dataset sbilanciato, l'accuratezza (accuracy) da sola potrebbe non essere la metrica più indicativa o informativa.
 
-![](images/Screenshot2024-01-21151053.png)
+![](images/6.png)
 
 
 Osserviamo dai risultati dell'allenamento un netto miglioramento nella performance del modello:
@@ -314,13 +314,17 @@ Osserviamo dai risultati dell'allenamento un netto miglioramento nella performan
 
 Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch ha semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
 
+![](images/7.png)
+![](images/8.png)
+
 ## SVM
 
 In questa sezione alleniamo il modello SVM.
 
 Partiamo con allenare il modello senza tuning degli iperparametri:
 
-![](images/Screenshot2024-01-21151131.png)
+![](images/9.png)
+
 
 
 I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, valori tra training e test set molto simili.
@@ -329,9 +333,8 @@ Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo 
 
 
 
-![](images/Screenshot2024-01-21151131.png)
+![](images/6.png)
 
-![](images/SVM1.png)
 
 I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
 
