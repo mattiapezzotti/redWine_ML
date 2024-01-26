@@ -234,11 +234,31 @@ Possiamo utilizzare il lavoro svolto fino ad ora per allenare dei modelli che ri
 
 I modelli scelti per l'allenamento sono il DecisionTree, la SVM (Suport Vector Machine) e Naive Bayes.
 
+### Decision tree
+
+#### Descrizione
+Decision tree è un modello di che rappresenta una struttura a forma di albero, utilizzata per prendere decisioni. 
+Ogni nodo dell'albero rappresenta una decisione, mentre i rami corrispondono alle possibili conseguenze di quella decisione. 
+Le foglie dell'albero contengono l'output della decisione finale. L'albero viene costruito in modo iterativo, 
+selezionando le feature migliori per dividere i dati in base a criteri come l'entropia o la purezza del nodo.
+
+#### Motivazione
 Gli alberi di decisione possono lavorare con attributi continui, come nel caso del nostro dataset. Possono essere utilizzati per la previsione di labels.
 
+
+### Support Vector Machine
+
+#### Descrizione
+Le Support Vector Machines (SVM) sono un tipo di algoritmo di apprendimento automatico utilizzato sia per problemi di 
+classificazione che di regressione. L'obiettivo principale è trovare un iperpiano che meglio separa i dati di input in 
+classi diverse nello spazio multidimensionale. L'iperpiano è scelto in modo che la distanza tra esso e i punti più vicini di ciascuna classe, 
+chiamati support vectors, sia massimizzata.
+
+#### Motivazioni
 Le SVM invece possono gestire anche loro lavorare con attributi continui in modo efficace. Anch'essi posossono essere utilizzati per la previsione di labels.
 
 ### Naive Bayes
+
 #### Descrizione
 Naive bayes è un modello basato sul teorema di Bayes, che è un teorema di probabilità condizionata, che consente di calcolare la probabilità di un 
 evento basandosi su informazioni precedenti. L'assunzione "naive" in Naive Bayes sta nel considerare le features come indipendenti tra loro, 
