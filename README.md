@@ -333,7 +333,7 @@ Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo 
 
 
 
-![](images/6.png)
+![](images/10.png)
 
 
 I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
