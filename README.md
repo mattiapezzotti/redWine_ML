@@ -238,6 +238,12 @@ Gli alberi di decisione possono lavorare con attributi continui, come nel caso d
 
 Le SVM invece possono gestire anche loro lavorare con attributi continui in modo efficace. Anch'essi posossono essere utilizzati per la previsione di labels.
 
+Naive Bayes potrebbe essere vantaggioso per diverse ragioni. 
+In primo luogo, la semplicità del modello rende Naive Bayes efficiente in termini computazionali, ideale per un
+dataset con un numero limitato di features come la composizione chimica del vino. Nonostante l'assunzione di indipendenza 
+condizionata, Naive Bayes può offrire buone prestazioni quando la dipendenza tra le features non è dominante. Inoltre, 
+la gestione efficace di classi sbilanciate e la facilità di interpretazione lo rendono adatto per la classificazione in categorie discrete.
+
 
 Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè l'accuratezza potrebbe non essere una buona metrica su un dataset sbilanciato, che il nostro come vedremo sarà.
 Inoltre il valore AUC e la curva ROC tengono conto della trade-off tra tasso di vera positività e tasso di falsi positivi, una buona indicazione della performance dei nostri modelli. 
@@ -286,7 +292,7 @@ Un valore di AUC pari a 0.564 è considerato basso.
 ### Applicazione di SMOTE
 Il nostro dataset è quindi sbilanciato. Per risolvere questo problema si è deciso di attuare la politica di oversampling SMOTE in modo da ribilanciare il traininng set senza ripetere elementi già esistenti, ma creandone di nuovi.
 
-Ribilinciando il training set evitiamo la contaminazione del processo di testing con dati sintetici.
+Ribilanciando il training set evitiamo la contaminazione del processo di testing con dati sintetici.
 
 ![](images/3.png)
 
@@ -341,7 +347,121 @@ I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un migl
 
 La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC ottimale, lavorando sul training set. Applicando questo nuovo modello sul test set non è detto che il valore di AUC che otteniamo sia per forza più elevato, tuttavia avendo la GridSearch lavorato su un set di dati più grande possiamo prendere il nuovo modello come migliorato.
 
+## Naive bayes
 
+A partire dal nostro training set bilanciato con l'utilizzo di SMOTE:
+```python
+X = newdf.iloc[:, :-1]
+y = newdf['qualityRange']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=15)
+
+smote = SMOTE()
+X_train, y_train = smote.fit_resample(X_train, y_train)
+```
+
+Iniziamo ad allenare il modello senza il tuning degl'iperparametri:
+
+```python
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Crea e addestra il classificatore Naive Bayes
+nb_classifier = GaussianNB()
+nb_classifier.fit(X_train, y_train)
+
+# Effettua le predizioni sui set di addestramento e test
+y_train_pred = nb_classifier.predict(X_train)
+y_test_pred = nb_classifier.predict(X_test)
+
+# Valuta le prestazioni del modello su ciascun set
+print("Train Set Performance:")
+print("Accuracy Score:", accuracy_score(y_train, y_train_pred))
+print("Classification Report:")
+print(classification_report(y_train, y_train_pred))
+conf_matrix_train = confusion_matrix(y_train, y_train_pred)
+print("Confusion Matrix:")
+print(conf_matrix_train)
+
+print("\nTest Set Performance:")
+print("Accuracy Score:", accuracy_score(y_test, y_test_pred))
+print("Classification Report:")
+print(classification_report(y_test, y_test_pred))
+conf_matrix_test = confusion_matrix(y_test, y_test_pred)
+print("Confusion Matrix:")
+print(conf_matrix_test)
+```
+
+![](images/naiveBayesNoSmote.png)
+
+### Risultati sul set di addestramento:
+- Accuracy Score: Il modello ha ottenuto un'accuratezza del 78.33% sul set di addestramento, 
+indicando che è stato in grado di predire correttamente la classe di circa il 78.33% delle 
+osservazioni.
+
+- Classification Report: L'analisi del report di classificazione mostra che il modello ha 
+una precisione, recall e f1-score di circa il 78% per entrambe le classi ("bad" e "good"). 
+La performance equilibrata suggerisce che il modello sta affrontando entrambe le classi in modo simile.
+
+- Confusion Matrix: La matrice di confusione indica che il modello ha commesso alcuni errori 
+nella classificazione. Ad esempio, ha classificato erroneamente 228 osservazioni della classe
+"bad" come "good" e 188 osservazioni della classe "good" come "bad".
+
+### Risultati sul set di test:
+- Accuracy Score: Il modello ha ottenuto un'accuratezza del 75.83% sul set di test, 
+indicando che è stato in grado di predire correttamente la classe di circa il 75.83% 
+delle osservazioni.
+
+- Classification Report: Analizzando il report di classificazione sul set di test, 
+notiamo che il modello ha una precisione del 94% per la classe "bad", ma una 
+precisione del 29% per la classe "good". La bassa precisione per la classe "good" 
+suggerisce che il modello ha difficoltà a identificare bene la classe, questo
+è dovuto al fatto che il test set è sbilanciato (con la classe "good" in minoranza)
+perché solo il training set è stato bilanciato con l'uso di smote 
+(generalmente non si applica SMOTE al test set).
+
+- Confusion Matrix: La matrice mostra che il modello ha commesso errori nella 
+classificazione della classe "good", con 97 osservazioni erroneamente 
+classificate come "bad" e 19 osservazioni della classe "good" erroneamente classificate come "bad".
+
+### Receiver Operating Characteristic (ROC) Curve
+
+Procediamo, con il seguente codice, a generare la curva ROC e il relativo valore di AUC:
+
+```python
+from sklearn.metrics import roc_curve, roc_auc_score
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+
+y_test_binary = LabelEncoder().fit_transform(y_test)
+
+# Calcoliamo le probabilità predette
+y_test_prob = nb_classifier.predict_proba(X_test)[:, 1]
+
+# Calcola la curva ROC
+fpr, tpr, thresholds = roc_curve(y_test_binary, y_test_prob)
+
+# Calcola dell'AUC
+auc = roc_auc_score(y_test_binary, y_test_prob)
+
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label=f'AUC = {auc:.3f}')
+plt.plot([0, 1], [0, 1], 'k--')  # Linea diagonale per il riferimento
+plt.xlabel('False Positive Rate (FPR)')
+plt.ylabel('True Positive Rate (TPR)')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend()
+plt.show()
+print("AUC Score:", auc)
+```
+
+![](images/naiveBayesCurvaRocNoSmote.png)
+
+Con un AUC di 0.81, il modello ha una buona capacità predittiva, questo significa che ha una 
+buona capacità di distinguere tra le due classi (positiva e negativa) in base alle 
+probabilità predette (un valore maggiore di 0.5 suggerisce che il modello sta 
+superando una classificazione casuale).
+
+### Tuning degl'iperparamentri con GridSearch
 
 
 # Confronto Modelli Allenati
@@ -349,7 +469,7 @@ La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC o
 Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul dataset.
 Tuttavia il Naive Bayes perfoma meglio a livello di tempo:
 
-![](images/Screenshot2024-01-21151306.png)
+![](images/tempiEsecuzione.png)
 
 # Conclusioni
 
