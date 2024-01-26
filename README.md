@@ -219,33 +219,34 @@ Studiando i risultati in un grafico:
 
 ![](images/pca.png)
 
-Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 8.
+Vediamo come non tutte le componenti sono fondamentali per lo studio della qualità del vino, potendo quindi ridurre le componenti da 11 a 6.
 
 ```python
 newDF = PCA(n_components=8).fit_transform(scaled_data)
 ```
 
-# Previsione quality usando DecisionTree e SVM
+# Applicazione dei modelli
 
 Possiamo utilizzare il lavoro svolto fino ad ora per allenare dei modelli che riescano a prevedere se un vino è "good" (quality da 7-8) o "bad" (quality da 3-6).
 
 
 ## Descrizione e motivazione dei modelli di machine learning scelti
 
-I modelli scelti per l'allenamento sono il DecisionTree e la SVM (Suport Vector Machine).
+I modelli scelti per l'allenamento sono il DecisionTree, la SVM (Suport Vector Machine) e Naive Bayes.
 
-Gli alberi di decisione possono lavorare con attributi continui, come nel caso del nostro dataset. Possono inoltre catturare relazioni non lineari tra gli attributi.
+Gli alberi di decisione possono lavorare con attributi continui, come nel caso del nostro dataset. Possono essere utilizzati per la previsione di labels.
 
-Le SVM invece possono gestire anche loro lavorare con attributi continui in modo efficace. Attraverso la mappatura delle caratteristiche di input in uno spazio dimensionale superiore riescono anche loro a catturare relazioni complesse tra gli attributi.
+Le SVM invece possono gestire anche loro lavorare con attributi continui in modo efficace. Anch'essi posossono essere utilizzati per la previsione di labels.
 
-Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè l'accuratezza potrebbe non essere una buona metrica su un dataset sbilanciato, che il nostro come vedremo è tale.
+
+Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè l'accuratezza potrebbe non essere una buona metrica su un dataset sbilanciato, che il nostro come vedremo sarà.
 Inoltre il valore AUC e la curva ROC tengono conto della trade-off tra tasso di vera positività e tasso di falsi positivi, una buona indicazione della performance dei nostri modelli. 
-Infine le curve ROC vedremo che ci saranno utili per fare confronti diretti tra due modelli allenati.
-##Scelta di DecisionTree e SVM
+Infine le curve ROC vedremo che ci saranno utili per fare confronti diretti tra i tre modelli allenati.
 
 ## Preparazione dataframe
 
-Come primo step dobbiamo aggiungere al dataframe pcaData l'attributo qualityRange:
+Aggiungiamo la nuova colonna "qualityRange" al dataframe che attribuisce a ogni row "good"(7-8) o "bad"(3-6) in base al range in cui si trova il rating del vino in questione:
+
 ```python
 quality_mapping = {
     3: "bad",
@@ -262,321 +263,87 @@ newdf = pd.concat([pcaData, df['qualityRange']], axis=1)
 Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo attributo "qualityRange".
 
 ### Primo allenamento DecisionTree
-Se proviamo ad allenare un modello DecisionTree come segue:
-
-```python
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
-
-X = newdf.iloc[:, :-1]
-y = newdf['qualityRange']
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.26, random_state=42)
-
-tree_classifier = DecisionTreeClassifier(random_state=10)
-
-tree_classifier.fit(X_train, y_train)
-
-y_pred = tree_classifier.predict(X_test)
-
-print(classification_report(y_test, y_pred))
-```
-
-Otteniamo iseguenti risultati:
+Se proviamo ad allenare un modello DecisionTree senza tuning degli iperparametri otteniamo i seguenti risultati:
 
 ![](images/Screenshot2024-01-21150842.png)
 
-Il modello come vediamo fatica a riconoscere con precisione gli elementi di tipo "good", questo potrebbe essere dovuto a un dataset sbilanciato che va controllato ed eventualmente corretto.
+Il modello ha dei risultati buoni per quanto riguarda le previsioni dei vini "bad", tuttavia fatica a riconoscere con accuratezza i vini di tipo "good".
+Questo potrebbe essere dovuto dal fatto che il nostro dataset sia sbilanciato. Andremo quindi ad analizzare la curva precision-recall per avere un'idea migliore della situazione.
 
-### Ribilanciamento del dataframe
+Inoltre dai risultati possiamo osservare come ci potrebbe essere overfitting: i risultati del training set sono infatti perfetti e molto diversi da quelli dei test set. Andrebbe quindi modificato il modello per ridurre l'overfitting.
 
-Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe è molto sbilanciato:
+Inanzitutto eseguiamo un'ulteriore verifica analizzando la curva precision-recall.
+
+### Precision-Recall Curve
+La curva Precision-Recall mostra il tradeoff tra precision e recall per diversi valori di soglia. Un'area sotto la curva (AUC) elevata rappresenta sia un alta recall sia un'alta precision, dove un'alta precision si riferisce a un basso tasso di falsi positivi e un alta recall si riferisce a un basso tasso di falsi negativi.
+
+Punteggi elevati per entrambi indicano che il classificatore restituisce risultati accurati (alta precisione) e restituisce la maggior parte di tutti i risultati positivi (alto richiamo). Tuttavia, nel nostro caso, per il target "good" abbiamo un valore basso sia per la recall che per la precision.
+
 ![](images/distributionBeforeSMOTE.png)
 
-Per risolvere eseguiamo SMOTE (Synthetic Minority Over-sampling Technique) per fare oversampling. SMOTE è una tecnica statistica che permette di aumentare il numero di casi nel set di dati in modo bilanciato. Crea nuove istanze a partire da casi di minoranza esistenti.
-Meglio eseguire un oversampling rispetto a undersampling in modo da non avere perdita perdita di informazione. Abbiamo scelto SMOTE perchè Non modifica il numero di casi di maggioranza e crea dati nuovi ipotetici, senza copiare quelli che già abbiamo.
+### Applicazione di SMOTE
+Il nostro dataset è quindi sbilanciato. Per risolvere questo problema si è deciso di attuare la politica di oversampling SMOTE in modo da ribilanciare il traininng set senza ripetere elementi già esistenti, ma creandone di nuovi.
 
-```python
-from imblearn.over_sampling import SMOTE
+Ribilinciando il training set evitiamo la contaminazione del processo di testing con dati sintetici.
 
-X = newdf.iloc[:, :-1]
-y = newdf['qualityRange']
+![](images/distributionBeforeSMOTE.png)
 
-smote = SMOTE()
-X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
-```
-
-Eseguendo un count sui valori di "qualityRange" osserviamo che il dataframe ora è bilanciato:
+Applichiamo quindi SMOTE al training set e otteniamo la seguente distribuzione sul training set:
 
 ![](images/distributionAfterSMOTE.png)
 
-Possiamo quindi inziare ad allenare dei modelli.
- 
+Adesso che il nostro training set è bilanciato alleniamo il Decision Tree:
+
 ## DecisionTree
 
-Iniziamo allenando un modello di albero decisionale usando il nostro dataframe.
-Divideremo il set di dati in 3 parti:
--training set
--validation set
--test set
-
-```python
-X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=10)
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=10)
-```
-Alleniamo il DecisionTree come segue:
-
-```python
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
-
-
-tree_classifier = DecisionTreeClassifier(random_state=10)
-
-tree_classifier.fit(X_train, y_train)
-
-y_train_pred = tree_classifier.predict(X_train)
-
-y_val_pred = tree_classifier.predict(X_val)
-
-y_test_pred = tree_classifier.predict(X_test)
-
-print("Training Set Performance:")
-print(classification_report(y_train, y_train_pred))
-
-print("Validation Set Performance:")
-print(classification_report(y_val, y_val_pred))
-
-print("Test Set Performance:")
-print(classification_report(y_test, y_test_pred))
-
-```
-
-Otteniamo i seguenti risultati:
+Allenando di nuovo il modello otteniamo i seguenti risultati:
 
 ![](images/Screenshot2024-01-21151022.png)
 
 ![](images/DecisionTree1.png)
+Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. 
 
-I risultati del modello sono positivi, tuttavia osservando la perfetta training set performance e la differenza abbastanza grande tra training set performance e la validation set permormance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. Noi useremo GridSearch che permette di trovare gli hyperparameters ottimizzando il valore di AUC:
-
-```python
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.metrics import classification_report
-from sklearn.model_selection import cross_val_score
-from time import time
-
-X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=10)
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=10)
-
-tree_classifier1 = DecisionTreeClassifier()
-
-param_grid = {
-    'max_features': [ 'sqrt', 'log2'],
-    'min_samples_split': [2,5,10, 15, 22,25, 24, 23, 30, 42, 50],
-    'min_samples_leaf': [1, 2, 4, 5, 6, 7, 8],
-    'max_depth': [None, 5, 10, 15, 20]
-}
-
-grid_search = GridSearchCV(tree_classifier1, param_grid, cv=10, scoring='roc_auc')
-grid_search.fit(X_train, y_train)
-
-
-best_params = grid_search.best_params_
-
-best_tree_classifier = DecisionTreeClassifier(random_state=42, **best_params)
-start_time = time()
-best_tree_classifier.fit(X_train, y_train)
-end_time = time()
-dt_training_time = end_time - start_time
-
-
-y_train_pred = best_tree_classifier.predict(X_train)
-
-y_val_pred = best_tree_classifier.predict(X_val)
-
-y_test_pred = best_tree_classifier.predict(X_test)
-
-
-print("Training Set Performance:")
-print(classification_report(y_train, y_train_pred))
-
-print("Validation Set Performance:")
-print(classification_report(y_val, y_val_pred))
-
-print("Test Set Performance:")
-print(classification_report(y_test, y_test_pred))
-
-```
-I risultati ottenuti saranno i seguenti:
+Usiamo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC. Cercheremo il migliore valore di AUC (Area Under Curve) perchè quando si affronta un dataset sbilanciato, l'accuratezza (accuracy) da sola potrebbe non essere la metrica più indicativa o informativa.
 
 ![](images/Screenshot2024-01-21151053.png)
 
-![](images/DecisionTree2.png)
 
-Quello che possiamo osservare è che il modello generalizza meglio il dataset.
-![](images/DecisionTree1graph.png) ![](images/DecisionTree2graph.png)
+Osserviamo dai risultati dell'allenamento un netto miglioramento nella performance del modello:
+-Overfitting ridotto, il modello è in grado di generalizzare meglio e di adattarsi a nuovi dati.
+-Gridsearch applicata ci ha permesso di cercare gli iperparametri per avere un valore AUC ottimale.
 
-Procediamo con l'allenamento della SVM.
+Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch ha semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
 
 ## SVM
 
-Alleniamo il modello come segue:
+In questa sezione alleniamo il modello SVM.
 
-```python
-from sklearn.svm import SVC
-from sklearn.metrics import classification_report
+Partiamo con allenare il modello senza tuning degli iperparametri:
 
-X = newdf.iloc[:, :-1]
-y = newdf['qualityRange']
+![](images/Screenshot2024-01-21151131.png)
 
-smote = SMOTE()
-X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
 
-X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=42)
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
+I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, valori tra training e test set molto simili.
 
-svm_classifier = SVC(random_state=42)
+Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo il modello con GridSearch sempre cercando il migliore di AUC:
 
-svm_classifier.fit(X_train, y_train)
 
-y_train_pred = svm_classifier.predict(X_train)
-
-print("Training Set Performance:")
-print(classification_report(y_train, y_train_pred))
-
-y_val_pred = svm_classifier.predict(X_val)
-
-print("Validation Set Performance:")
-print(classification_report(y_val, y_val_pred))
-
-y_test_pred = svm_classifier.predict(X_test)
-
-print("Test Set Performance:")
-print(classification_report(y_test, y_test_pred))
-
-```
-I risultati che otteniamo da traing, validation e testing sono i seguenti
 
 ![](images/Screenshot2024-01-21151131.png)
 
 ![](images/SVM1.png)
 
-Il risultato è decisamente un buon punto di inizio, performando bene su tutti i set in modo stabile, non è presente overfitting. Tuttavia potrebbe essere migliorato applicando GridSearch:
+I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
 
-```python
-from sklearn.svm import SVC
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from imblearn.over_sampling import SMOTE
-import pandas as pd
-
-X = newdf.iloc[:, :-1]
-y = newdf['qualityRange']
-
-smote = SMOTE()
-X_train_resampled, y_train_resampled = smote.fit_resample(X, y)
-
-X_train, X_temp, y_train, y_temp = train_test_split(X_train_resampled, y_train_resampled, test_size=0.3, random_state=42)
-X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.3, random_state=42)
-
-
-svm_classifier = SVC(random_state=42)
-
-param_grid = {
-    'C': [0.1, 1, 10],
-    'kernel': ['linear', 'rbf', 'poly'],
-    'gamma': ['scale', 'auto']
-}
-
-svm_grid = GridSearchCV(svm_classifier, param_grid, cv=3, scoring='roc_auc')
-
-svm_grid.fit(X_train, y_train)
-
-
-best_params_svm = svm_grid.best_params_
-best_svm_classifier = SVC(random_state=42, **best_params_svm)
-
-start_time = time()
-best_svm_classifier.fit(X_train, y_train)
-end_time = time()
-svm_training_time = end_time - start_time
+La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC ottimale, lavorando sul training set. Applicando questo nuovo modello sul test set non è detto che il valore di AUC che ottiamo sia per forza più elevato, tuttavia avendo la GridSearch lavorato su un set di dati più grande possiamo prendere il nuovo modello come migliorato.
 
 
 
-y_train_pred = best_svm_classifier.predict(X_train)
 
-print("Training Set Performance:")
-print(classification_report(y_train, y_train_pred))
+# Confronto Modelli Allenati
 
-y_val_pred = best_svm_classifier.predict(X_val)
-
-print("Validation Set Performance:")
-print(classification_report(y_val, y_val_pred))
-
-y_test_pred = best_svm_classifier.predict(X_test)
-
-print("Test Set Performance:")
-print(classification_report(y_test, y_test_pred))
-
-
-```
-
-I risultati del nuovo allenamento sono i seguenti:
-
-![](images/Screenshot2024-01-21151144.png)
-
-![](images/SVM2.png)
-
-Possiamo osservare che con i nuovi parametri si ottiene un modello che mostra una performance superiore su tutti i set. Precisione, recall e F1-score sonon anche più elevati.
-Valore AUC migliorato indica che il modello ha migliorato la sua capacità di discriminare tra le classi.
-
-## Confronto tra i modelli trovati
-
-Proviamo ora a confrontare i due modelli allenati, DecisionTree (con gridsearch) e SVM (con gridsearch):
-
-```python
-
-from sklearn.metrics import roc_curve, roc_auc_score
-from sklearn.preprocessing import LabelEncoder
-import matplotlib.pyplot as plt
-
-
-fpr_grid, tpr_grid, thresholds = roc_curve(y_test_binary1, y_pred_prob1)
-
-roc_auc_grid = roc_auc_score(y_test_binary1, y_pred_prob1)
-
-
-
-fpr_svm, tpr_svm, thresholds2 = roc_curve(y_test_binary2, y_pred_prob2)
-
-roc_auc_svm = roc_auc_score(y_test_binary2, y_pred_prob2)
-
-
-plt.plot(fpr_grid, tpr_grid, label='Decision Tree (area = %0.2f)' % roc_auc_grid)
-plt.plot(fpr_svm, tpr_svm, label='SVM (area = %0.2f)' % roc_auc_svm)
-
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend(loc="lower right")
-plt.show()
-
-```
-
-![](images/Comparison.png)
-
-![](images/Comparison2.png)
-
-Rappresentando le curve ROC dei due modelli sullo stesso diagramma possiamo osservare come la SVM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul dataset rispetto al DecisionTree.
-Tuttavia il DecisionTree perfoma meglio a livello di tempo:
+Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul dataset.
+Tuttavia il Naive Bayes perfoma meglio a livello di tempo:
 
 ![](images/Screenshot2024-01-21151306.png)
 
