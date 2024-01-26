@@ -280,6 +280,7 @@ La curva Precision-Recall mostra il tradeoff tra precision e recall per diversi 
 Punteggi elevati per entrambi indicano che il classificatore restituisce risultati accurati (alta precisione) e restituisce la maggior parte di tutti i risultati positivi (alto richiamo). Tuttavia, nel nostro caso, per il target "good" abbiamo un valore basso sia per la recall che per la precision.
 
 ![](images/2.png)
+
 Un valore di AUC pari a 0.564 è considerato basso.
 
 ### Applicazione di SMOTE
@@ -338,7 +339,7 @@ Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo 
 
 I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
 
-La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC ottimale, lavorando sul training set. Applicando questo nuovo modello sul test set non è detto che il valore di AUC che ottiamo sia per forza più elevato, tuttavia avendo la GridSearch lavorato su un set di dati più grande possiamo prendere il nuovo modello come migliorato.
+La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC ottimale, lavorando sul training set. Applicando questo nuovo modello sul test set non è detto che il valore di AUC che otteniamo sia per forza più elevato, tuttavia avendo la GridSearch lavorato su un set di dati più grande possiamo prendere il nuovo modello come migliorato.
 
 
 
