@@ -238,6 +238,14 @@ Gli alberi di decisione possono lavorare con attributi continui, come nel caso d
 
 Le SVM invece possono gestire anche loro lavorare con attributi continui in modo efficace. Anch'essi posossono essere utilizzati per la previsione di labels.
 
+### Naive Bayes
+#### Descrizione
+Naive bayes è un modello basato sul teorema di Bayes, che è un teorema di probabilità condizionata, che consente di calcolare la probabilità di un 
+evento basandosi su informazioni precedenti. L'assunzione "naive" in Naive Bayes sta nel considerare le features come indipendenti tra loro, 
+anche se questa assunzione potrebbe non essere realistica. Questa semplificazione semplifica notevolmente i calcoli e rende il modello 
+computazionalmente efficiente.
+
+#### Motivazione
 Naive Bayes potrebbe essere vantaggioso per diverse ragioni. 
 In primo luogo, la semplicità del modello rende Naive Bayes efficiente in termini computazionali, ideale per un
 dataset con un numero limitato di features come la composizione chimica del vino. Nonostante l'assunzione di indipendenza 
