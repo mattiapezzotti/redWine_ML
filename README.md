@@ -463,14 +463,229 @@ superando una classificazione casuale).
 
 ### Tuning degl'iperparamentri con GridSearch
 
+Naive Bayes è noto per essere un modello con pochi iperparametri e, in alcuni casi, può non 
+beneficiare in modo significativo dall'uso di GridSearch per il tuning degli iperparametri. 
+Dato che utilizziamo un classificatore Naive Bayes Gaussiano, potrebbe essere interessante 
+regolare i parametri legati alla stima della varianza (var_smoothing).
+
+Il parametro *var_smoothing* nel classificatore Naive Bayes Gaussiano è utilizzato per 
+affrontare il problema della varianza zero nelle feature. 
+Quando si calcolano le probabilità condizionate delle feature dati i target, 
+è possibile che alcune feature abbiano varianza zero o molto vicina a zero. 
+Questo può causare problemi durante il calcolo delle probabilità, in particolare quando 
+si utilizza la funzione di densità di probabilità della distribuzione normale.
+
+Per evitare problemi numerici, viene aggiunta una piccola quantità di varianza (var_smoothing) 
+a tutte le varianze delle feature. Questo assicura che nessuna varianza sia zero, 
+garantendo una maggiore stabilità nel calcolo delle probabilità.
+
+```python
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report
+
+param_grid = {
+    'var_smoothing': [1e-12, 1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5,
+                      1e-4, 1e-3, 1e-2, 1e-1, 0.5, 1.0, 5.0, 10.0]
+}
+
+naive_bayes_classifier = GaussianNB()
+
+nb_grid = GridSearchCV(naive_bayes_classifier, param_grid, verbose=1, cv=10, scoring='roc_auc')
+
+# Eseguire la ricerca dei parametri ottimali sul set di addestramento
+nb_grid.fit(X_train, y_train)
+
+# Ottenere i migliori parametri trovati
+best_params_nb = nb_grid.best_params_
+
+print("Miglior parametro:", best_params_nb)
+
+# Creare un nuovo classificatore Naive Bayes con i migliori parametri
+best_nb_classifier = GaussianNB(**best_params_nb)
+
+# Addestramento
+start_time = time()
+best_nb_classifier.fit(X_train, y_train)
+end_time = time()
+
+naive_bayes_training_time = end_time - start_time
+
+y_train_pred = best_nb_classifier.predict(X_train)
+y_test_pred = best_nb_classifier.predict(X_test)
+
+print("Train Set Performance:")
+print("Accuracy Score:", accuracy_score(y_train, y_train_pred))
+print("Classification Report:")
+print(classification_report(y_train, y_train_pred))
+conf_matrix_train = confusion_matrix(y_train, y_train_pred)
+print("Confusion Matrix:")
+print(conf_matrix_train)
+
+print("\nTest Set Performance:")
+print("Accuracy Score:", accuracy_score(y_test, y_test_pred))
+print("Classification Report:")
+print(classification_report(y_test, y_test_pred))
+conf_matrix_test = confusion_matrix(y_test, y_test_pred)
+print("Confusion Matrix:")
+print(conf_matrix_test)
+```
+![](images/naiveBayesGridSearch.png)
+
+### Risultati sul set di addestramento
+La precisione complessiva sul set di addestramento sembra buona, con un'accuracy del 78.9%.
+La matrice di confusione mostra che il modello ha una tendenza a classificare meglio la classe 
+"good" rispetto alla classe "bad", ma potrebbe esserci una certa confusione tra le classi, come 
+indicato dai falsi positivi e falsi negativi.
+
+### Risultati sul set di test
+Anche se l'accuracy sul set di test è del 71.25%, tale valore è fuorviante perchè il test set 
+è sbilanciato; bisogna analizzare le metriche precision, recall e f1-score. 
+
+La precisione per la classe "good" è bassa (26%), il che suggerisce 
+che il modello ha difficoltà a identificare correttamente questa classe. 
+Inoltre, il basso il recall per la classe "bad" (70%) indica che il modello ha 
+difficoltà a catturare tutti i casi di questa classe. 
+
+Come per il test precedente all'uso di GridSearch, questo è dovuto al fatto che il test set 
+è sbilanciato (con la classe "good" in minoranza) perché solo il training set è stato bilanciato 
+con l'uso di smote (generalmente non si applica SMOTE al test set).
+
+La matrice di confusione mostra che il modello ha una tendenza a predire più falsi positivi e 
+meno falsi negativi. Questo è sempre dovuto dal fatto che il test set
+non ha beneficiato dell'oversampling applicato al training set.
+
+### Receiver Operating Characteristic (ROC) Curve con GridSearch
+```python
+from sklearn.metrics import roc_curve, roc_auc_score
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+
+y_test_binary3 = LabelEncoder().fit_transform(y_test)
+y_pred_prob3 = best_nb_classifier.predict_proba(X_test)[:, 1]
+
+fpr, tpr, thresholds = roc_curve(y_test_binary3, y_pred_prob3)
+
+auc = roc_auc_score(y_test_binary3, y_pred_prob3)
+
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label=f'AUC = {auc:.3f}')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate (FPR)')
+plt.ylabel('True Positive Rate (TPR)')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend()
+plt.show()
+
+print("AUC Score:", auc)
+```
+![](images/naiveBayesCurvaRocGridSearch.png)
+
+L'aumento dell'AUC da 0.81 a 0.823 dopo l'applicazione di GridSearch indicare un 
+miglioramento marginale nelle prestazioni del modello Naive Bayes. Tuttavia, è importante notare 
+che il miglioramento è relativamente modesto.
+
+
+
+### K-Fold Cross Validation
+```python
+import numpy as np
+from sklearn.model_selection import KFold
+from sklearn.metrics import accuracy_score
+
+n_fold = 10
+folds = KFold(n_splits=n_fold, shuffle=True)
+accuracy_k_fold_nb = []
+
+for n_fold, (train_idx, valid_idx) in enumerate(folds.split(X_train, y_train)):
+    x_train_fold, x_valid_fold = X_train.iloc[train_idx], X_train.iloc[valid_idx]
+    y_train_fold, y_valid_fold = y_train.iloc[train_idx], y_train.iloc[valid_idx]
+
+    y_valid_pred = best_nb_classifier.predict(x_valid_fold)
+
+    accuracy_fold = accuracy_score(y_valid_fold, y_valid_pred)
+    accuracy_k_fold_nb.append(accuracy_fold)
+
+accuracy_mean = np.mean(accuracy_k_fold_nb)
+print("Media dell'accuratezza:", accuracy_mean)
+```
+
+*Media dell'accuratezza: 0.78906249*
+
+Il valore della media dell'accuratezza calcolata con la K-Fold cross validation da sola non fornisce
+un'immagine completa delle prestazioni del modello, specialmente se il dataset è sbilanciato. 
+Pertanto, va esaminato con le metriche precision, recall, e F1-score per ottenere una
+comprensione più completa delle prestazioni.
 
 # Confronto Modelli Allenati
+## Confronto curve ROC
 
-Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul dataset.
-Tuttavia il Naive Bayes perfoma meglio a livello di tempo:
+```python
+from sklearn.metrics import roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+
+# Decision Tree
+fpr_grid, tpr_grid, thresholds = roc_curve(y_test_binary1, y_pred_prob1)
+roc_auc_grid = roc_auc_score(y_test_binary1, y_pred_prob1)
+# SVM
+fpr_svm, tpr_svm, thresholds2 = roc_curve(y_test_binary2, y_pred_prob2)
+roc_auc_svm = roc_auc_score(y_test_binary2, y_pred_prob2)
+# Naive Bayes
+fpr_nb, tpr_nb, thresholds3 = roc_curve(y_test_binary3, y_pred_prob3)
+roc_auc_nb = roc_auc_score(y_test_binary3, y_pred_prob3)
+
+plt.plot(fpr_grid, tpr_grid, label='Decision Tree (area = %0.2f)' % roc_auc_grid)
+plt.plot(fpr_svm, tpr_svm, label='SVM (area = %0.2f)' % roc_auc_svm)
+plt.plot(fpr_nb, tpr_nb, label='Naive Bayes (area = %0.2f)' % roc_auc_nb)
+
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic (ROC) Curve')
+plt.legend(loc="lower right")
+plt.show()
+```
+
+![](images/confrontoCurveROC.png)
+
+## Confronto intervalli di confidenza
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+mean_value1 = np.mean(confidence_interval1)
+plt.errorbar(0, mean_value1, yerr=(confidence_interval1[1] - confidence_interval1[0])/2, fmt='o', label='DecisionTree')
+
+mean_value2 = np.mean(confidence_interval2)
+plt.errorbar(1, mean_value2, yerr=(confidence_interval2[1] - confidence_interval2[0])/2, fmt='o', label='SVM')
+
+mean_value3 = np.mean(confidence_interval3)
+plt.errorbar(2, mean_value3, yerr=(confidence_interval3[1] - confidence_interval3[0])/2, fmt='o', label='Naive Bayes')
+
+plt.xlabel('Group')
+plt.ylabel('Value')
+plt.title('Mean with Confidence Interval')
+plt.legend()
+plt.show()
+```
+
+![](images/confrontoIntervalliConfidenza.png)
+
+Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM 
+riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". 
+Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul 
+dataset. Tuttavia Naive Bayes perfoma meglio a livello di tempo:
 
 ![](images/tempiEsecuzione.png)
 
 # Conclusioni
 
-Abbiamo allenato due modelli (DesitionTree e SVM) con buoni risultati. Confrontandoli la SVM che abbiamo allenato performa meglio sul nostro set di dati sia dal punto di vista di AUC (Area Under Curve) sia dal punto di vista di instervallo di accuratezza. Tutto ciò però con un tempo di allenamento leggermente superiore rispetto al DecisionTree. Nel contesto del nostro lavoro tuttavia questo non è importante, in quanto è preferibile una migliore classificazione a partire dai dati di input rispetto a migliore performance al livello di tempo.
+Abbiamo allenato tre modelli (Decision Tree, SVM e Naive Bayes) con buoni risultati. 
+Confrontandoli la SVM che abbiamo allenato performa meglio sul nostro set di dati sia dal punto 
+di vista di AUC (Area Under Curve) sia dal punto di vista di intervallo di accuratezza. 
+Tutto ciò però con un tempo di allenamento leggermente superiore rispetto al DecisionTree ma
+inferiore a Naive Bayes. 
+Nel contesto del nostro lavoro tuttavia questo non è importante, in quanto è preferibile una 
+migliore classificazione a partire dai dati di input rispetto a migliore performance al livello 
+di tempo.
