@@ -353,6 +353,8 @@ Osserviamo dai risultati dell'allenamento un netto miglioramento nella performan
 
 Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch ha semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
 
+Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
+
 ![](images/7.png)
 ![](images/8.png)
 
@@ -382,6 +384,8 @@ Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo 
 I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
 
 La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC ottimale, lavorando sul training set. Applicando questo nuovo modello sul test set non è detto che il valore di AUC che otteniamo sia per forza più elevato, tuttavia avendo la GridSearch lavorato su un set di dati più grande possiamo prendere il nuovo modello come migliorato.
+
+Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
 
 ## Naive bayes
 
