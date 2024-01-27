@@ -390,15 +390,14 @@ Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo 
 
 Andremo a prendere in considerazione qualche iperparametro della VSM:
 
--C: Parametro di regolarizzazione, controlla la penalizzazione applicata agli errori del modello.
+- C: Parametro di regolarizzazione, controlla la penalizzazione applicata agli errori del modello.
 
-.kernel: Specifica il tipo di kernel da utilizzare nell'algoritmo SVM. I kernel sono funzioni matematiche che trasformano i dati in uno spazio dimensionale superiore. Le opzioni considerate sono le seguenti:
+- kernel: Specifica il tipo di kernel da utilizzare nell'algoritmo SVM. I kernel sono funzioni matematiche che trasformano i dati in uno spazio dimensionale superiore. Le opzioni considerate sono le seguenti:
+  - 'linear': Kernel lineare.
+  - 'rbf' (Radial Basis Function): Kernel gaussiano.
+  - 'poly': Kernel polinomiale.
 
-'linear': Kernel lineare.
-'rbf' (Radial Basis Function): Kernel gaussiano.
-'poly': Kernel polinomiale.
-
--gamma: Coefficiente del kernel per 'rbf' e 'poly'. Controlla l'influenza di un singolo esempio di addestramento.
+- gamma: Coefficiente del kernel per 'rbf' e 'poly'. Controlla l'influenza di un singolo esempio di addestramento.
 
 
 
