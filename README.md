@@ -340,7 +340,19 @@ Allenando di nuovo il modello otteniamo i seguenti risultati:
 
 Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. 
 
+### Gridsearch
+
 Usiamo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC. Cercheremo il migliore valore di AUC (Area Under Curve) perchè quando si affronta un dataset sbilanciato, l'accuratezza (accuracy) da sola potrebbe non essere la metrica più indicativa o informativa.
+
+Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
+
+-max_features: Numero massimo di feature da considerare per la suddivisione di un nodo dell'albero.
+
+-min_samples_split: Numero minimo di campioni richiesti per suddividere un nodo interno. Questo parametro controlla la complessità dell'albero impedendo la suddivisione di nodi che contengono un numero di campioni inferiore a quello specificato.
+
+-min_samples_leaf: Numero minimo di campioni richiesti per essere in una foglia. Questo parametro controlla la profondità dell'albero e può aiutare a evitare divisioni che portano a foglie con un numero molto basso di campioni.
+
+-max_depth: Profondità massima dell'albero. Limitare la profondità può contribuire a evitare l'overfitting.
 
 ![](images/6.png)
 
@@ -373,6 +385,20 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
 I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, valori tra training e test set molto simili.
 
 Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo il modello con GridSearch sempre cercando il migliore di AUC:
+
+### Gridsearch
+
+Andremo a prendere in considerazione qualche iperparametro della VSM:
+
+-C: Parametro di regolarizzazione, controlla la penalizzazione applicata agli errori del modello.
+
+.kernel: Specifica il tipo di kernel da utilizzare nell'algoritmo SVM. I kernel sono funzioni matematiche che trasformano i dati in uno spazio dimensionale superiore. Le opzioni considerate sono le seguenti:
+
+'linear': Kernel lineare.
+'rbf' (Radial Basis Function): Kernel gaussiano.
+'poly': Kernel polinomiale.
+
+-gamma: Coefficiente del kernel per 'rbf' e 'poly'. Controlla l'influenza di un singolo esempio di addestramento.
 
 
 
