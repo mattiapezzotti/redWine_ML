@@ -338,7 +338,7 @@ Allenando di nuovo il modello otteniamo i seguenti risultati:
 
 ![](images/Screenshot(73).png)
 
-Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. 
+Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance, che è perfetta, e test set possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi iperparametri per il modello. 
 
 ### Gridsearch
 
@@ -382,7 +382,7 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
 
 
 
-I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, valori tra training e test set molto simili.
+I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, risultati considerando lo sbilanciamento del test set positivi.
 
 Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo il modello con GridSearch sempre cercando il migliore di AUC:
 
