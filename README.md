@@ -336,11 +336,15 @@ Allenando di nuovo il modello otteniamo i seguenti risultati:
 
 ![](images/5.png)
 
+![](images/Screenshot(73).png)
+
 Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi hyperparameters per il modello. 
 
 Usiamo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC. Cercheremo il migliore valore di AUC (Area Under Curve) perchè quando si affronta un dataset sbilanciato, l'accuratezza (accuracy) da sola potrebbe non essere la metrica più indicativa o informativa.
 
 ![](images/6.png)
+
+![](images/Screenshot(74).png)
 
 
 Osserviamo dai risultati dell'allenamento un netto miglioramento nella performance del modello:
@@ -360,6 +364,8 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
 
 ![](images/9.png)
 
+![](images/Screenshot(75).png)
+
 
 
 I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, valori tra training e test set molto simili.
@@ -369,6 +375,8 @@ Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo 
 
 
 ![](images/10.png)
+
+![](images/Screenshot(76).png)
 
 
 I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
