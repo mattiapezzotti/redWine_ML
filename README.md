@@ -520,7 +520,7 @@ plt.show()
 print("AUC Score:", auc)
 ```
 
-![](images/naiveBayesCurvaRocNoSmote.png)
+![](images/naiveBayesCurvaRocWithSmote.png)
 
 Con un AUC di 0.81, il modello ha una buona capacità predittiva, questo significa che ha una 
 buona capacità di distinguere tra le due classi (positiva e negativa) in base alle 
