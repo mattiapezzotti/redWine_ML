@@ -526,7 +526,7 @@ buona capacità di distinguere tra le due classi (positiva e negativa) in base a
 probabilità predette (un valore maggiore di 0.5 suggerisce che il modello sta 
 superando una classificazione casuale).
 
-### Tuning degl'iperparamentri con GridSearch
+### Tuning degl'iperparametri con GridSearch
 
 Naive Bayes è noto per essere un modello con pochi iperparametri e, in alcuni casi, può non 
 beneficiare in modo significativo dall'uso di GridSearch per il tuning degli iperparametri. 
