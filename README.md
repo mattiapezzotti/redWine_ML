@@ -312,7 +312,7 @@ La curva ci informa sullo sbilanciamento del dataset. Più alto il valore della 
   <img src="images/2.png" width="100%">
 </p>
 
-Come possiamo osservare otteniamo un valore AUC di 0.826 possiamo quindi dire che il dataset è abbastanza bilanciato. Non useremo quindi alcuna politica di oversampling o undersampling per bilanciare il dataset.
+Come possiamo osservare otteniamo un valore AUC di 0.811 possiamo quindi dire che il dataset è abbastanza bilanciato. Non useremo quindi alcuna politica di oversampling o undersampling per bilanciare il dataset.
 
 ## DecisionTree
 
