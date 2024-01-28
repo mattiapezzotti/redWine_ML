@@ -335,7 +335,7 @@ Allenando il primo modello, il Decision Tree senza tuning degli iperparametri:
 </p>
 
 <p align="center">
-  <img src="images/1-2.png" width="70%">
+  <img src="images/1-2.png" width="30%">
 </p>
 
 
@@ -371,7 +371,7 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 </p>
 
 <p align="center">
-  <img src="images/1-4.png" width="70%">
+  <img src="images/1-4.png" width="30%">
 </p>
 
 
@@ -410,7 +410,7 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
 </p>
 
 <p align="center">
-  <img src="images/1-7.png" width="70%">
+  <img src="images/1-7.png" width="30%">
 </p>
 
 I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC e performance simili tra training set e test set.
@@ -445,7 +445,7 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 </p>
 
 <p align="center">
-  <img src="images/1-10.png" width="70%">
+  <img src="images/1-10.png" width="30%">
 </p>
 
 
