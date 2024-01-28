@@ -329,7 +329,7 @@ Allenando il primo modello, il Decision Tree senza tuning degli iperparametri:
 
 I risultati sono positivi, tuttavia la training set performance è perfetta e molto diversa da quella del test set, questo ci indica che il modello molto probabilmente è caratterizzato da overfitting.
 
-Usiamo GridSearch che permette di trovare gli iperparametri per ottimizzare il valore di AUC.
+Usiamo GridSearch che permette di trovare gli iperparametri per ottimizzare il valore di AUC e potrebbe avere un impatto sull'overfitting.
 
 ### Gridsearch
 
