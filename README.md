@@ -296,7 +296,7 @@ newdf = pd.concat([pcaData, df['qualityRange']], axis=1)
 Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo attributo "qualityRange".
 
 <p align="center">
-  <img src="images/2.png" width="100%">
+  <img src="images/1.png" width="100%">
 </p>
 
 ### Precision-Recall Curve
@@ -308,7 +308,7 @@ La curva ci informa sullo sbilanciamento del dataset. Più alto il valore della 
 
 
 <p align="center">
-  <img src="images/1.png" width="100%">
+  <img src="images/2.png" width="100%">
 </p>
 
 Come possiamo osservare otteniamo un valore AUC di 0.811 possiamo quindi dire che il dataset è abbastanza bilanciato. Non useremo quindi alcuna politica di oversampling o undersampling per bilanciare il dataset.
