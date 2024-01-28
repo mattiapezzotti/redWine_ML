@@ -455,7 +455,7 @@ Iniziamo ad allenare il modello senza il tuning degl'iperparametri:
 
 
 ### Considerazioni:
-I risultati dei sui due set suggeriscono che il modello ha una buona capacità di generalizzazione mantenendo un'equa performance tra le diverse classi.
+I risultati dei due set suggeriscono che il modello ha una buona capacità di generalizzazione mantenendo un'equa performance tra le diverse classi.
 
 - Accuracy Score: Il modello ha ottenuto un'accuratezza abbastanza alta sul set di 
  addestramento e test, indicando che è stato in grado di predire correttamente le due classi.
