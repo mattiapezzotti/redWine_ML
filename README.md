@@ -442,35 +442,6 @@ Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che 
 
 Iniziamo ad allenare il modello senza il tuning degl'iperparametri:
 
-```python
-from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score, classification_report
-
-# Crea e addestra il classificatore Naive Bayes
-nb_classifier = GaussianNB()
-nb_classifier.fit(X_train, y_train)
-
-# Effettua le predizioni sui set di addestramento e test
-y_train_pred = nb_classifier.predict(X_train)
-y_test_pred = nb_classifier.predict(X_test)
-
-# Valuta le prestazioni del modello su ciascun set
-print("Train Set Performance:")
-print("Accuracy Score:", accuracy_score(y_train, y_train_pred))
-print("Classification Report:")
-print(classification_report(y_train, y_train_pred))
-conf_matrix_train = confusion_matrix(y_train, y_train_pred)
-print("Confusion Matrix:")
-print(conf_matrix_train)
-
-print("\nTest Set Performance:")
-print("Accuracy Score:", accuracy_score(y_test, y_test_pred))
-print("Classification Report:")
-print(classification_report(y_test, y_test_pred))
-conf_matrix_test = confusion_matrix(y_test, y_test_pred)
-print("Confusion Matrix:")
-print(conf_matrix_test)
-```
 
 <p align="center">
   <img src="images/primaIter.png" width="100%">
@@ -493,32 +464,6 @@ I risultati dei sui due set suggeriscono che il modello ha una buona capacità d
 
 Procediamo, con il seguente codice, a generare la curva ROC e il relativo valore di AUC:
 
-```python
-from sklearn.metrics import roc_curve, roc_auc_score
-from sklearn.preprocessing import LabelEncoder
-import matplotlib.pyplot as plt
-
-y_test_binary = LabelEncoder().fit_transform(y_test)
-
-# Calcoliamo le probabilità predette
-y_test_prob = nb_classifier.predict_proba(X_test)[:, 1]
-
-# Calcola la curva ROC
-fpr, tpr, thresholds = roc_curve(y_test_binary, y_test_prob)
-
-# Calcola dell'AUC
-auc = roc_auc_score(y_test_binary, y_test_prob)
-
-plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr, label=f'AUC = {auc:.3f}')
-plt.plot([0, 1], [0, 1], 'k--')  # Linea diagonale per il riferimento
-plt.xlabel('False Positive Rate (FPR)')
-plt.ylabel('True Positive Rate (TPR)')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend()
-plt.show()
-print("AUC Score:", auc)
-```
 
 <p align="center">
   <img src="images/nb1IterAUC.png" width="100%">
@@ -547,56 +492,6 @@ Per evitare problemi numerici, viene aggiunta una piccola quantità di varianza 
 a tutte le varianze delle feature. Questo assicura che nessuna varianza sia zero, 
 garantendo una maggiore stabilità nel calcolo delle probabilità.
 
-```python
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report
-
-param_grid = {
-    'var_smoothing': [1e-12, 1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5,
-                      1e-4, 1e-3, 1e-2, 1e-1, 0.5, 1.0, 5.0, 10.0]
-}
-
-naive_bayes_classifier = GaussianNB()
-
-nb_grid = GridSearchCV(naive_bayes_classifier, param_grid, verbose=1, cv=10, scoring='roc_auc')
-
-# Eseguire la ricerca dei parametri ottimali sul set di addestramento
-nb_grid.fit(X_train, y_train)
-
-# Ottenere i migliori parametri trovati
-best_params_nb = nb_grid.best_params_
-
-print("Miglior parametro:", best_params_nb)
-
-# Creare un nuovo classificatore Naive Bayes con i migliori parametri
-best_nb_classifier = GaussianNB(**best_params_nb)
-
-# Addestramento
-start_time = time()
-best_nb_classifier.fit(X_train, y_train)
-end_time = time()
-
-naive_bayes_training_time = end_time - start_time
-
-y_train_pred = best_nb_classifier.predict(X_train)
-y_test_pred = best_nb_classifier.predict(X_test)
-
-print("Train Set Performance:")
-print("Accuracy Score:", accuracy_score(y_train, y_train_pred))
-print("Classification Report:")
-print(classification_report(y_train, y_train_pred))
-conf_matrix_train = confusion_matrix(y_train, y_train_pred)
-print("Confusion Matrix:")
-print(conf_matrix_train)
-
-print("\nTest Set Performance:")
-print("Accuracy Score:", accuracy_score(y_test, y_test_pred))
-print("Classification Report:")
-print(classification_report(y_test, y_test_pred))
-conf_matrix_test = confusion_matrix(y_test, y_test_pred)
-print("Confusion Matrix:")
-print(conf_matrix_test)
-```
 
 <p align="center">
   <img src="images/nbSecondaIterazioneReport.png" width="100%">
@@ -612,29 +507,7 @@ In generale, questi risultati suggeriscono che il modello ha imparato abbastanza
 generalizza decentemente ai dati di test.
 
 ### Receiver Operating Characteristic (ROC) Curve con GridSearch
-```python
-from sklearn.metrics import roc_curve, roc_auc_score
-from sklearn.preprocessing import LabelEncoder
-import matplotlib.pyplot as plt
 
-y_test_binary3 = LabelEncoder().fit_transform(y_test)
-y_pred_prob3 = best_nb_classifier.predict_proba(X_test)[:, 1]
-
-fpr, tpr, thresholds = roc_curve(y_test_binary3, y_pred_prob3)
-
-auc = roc_auc_score(y_test_binary3, y_pred_prob3)
-
-plt.figure(figsize=(8, 6))
-plt.plot(fpr, tpr, label=f'AUC = {auc:.3f}')
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlabel('False Positive Rate (FPR)')
-plt.ylabel('True Positive Rate (TPR)')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend()
-plt.show()
-
-print("AUC Score:", auc)
-```
 
 <p align="center">
   <img src="images/naiveBayesCurvaRocGridSearch.png" width="100%">
@@ -652,27 +525,6 @@ La scelta del parametro 'var_smoothing' tramite GridSearch sembra aver migliorat
 le prestazioni del modello rispetto alla prima iterazione.
 
 ### K-Fold Cross Validation
-```python
-import numpy as np
-from sklearn.model_selection import KFold
-from sklearn.metrics import accuracy_score
-
-n_fold = 10
-folds = KFold(n_splits=n_fold, shuffle=True)
-accuracy_k_fold_nb = []
-
-for n_fold, (train_idx, valid_idx) in enumerate(folds.split(X_train, y_train)):
-    x_train_fold, x_valid_fold = X_train.iloc[train_idx], X_train.iloc[valid_idx]
-    y_train_fold, y_valid_fold = y_train.iloc[train_idx], y_train.iloc[valid_idx]
-
-    y_valid_pred = best_nb_classifier.predict(x_valid_fold)
-
-    accuracy_fold = accuracy_score(y_valid_fold, y_valid_pred)
-    accuracy_k_fold_nb.append(accuracy_fold)
-
-accuracy_mean = np.mean(accuracy_k_fold_nb)
-print("Media dell'accuratezza:", accuracy_mean)
-```
 
 *Media dell'accuratezza: 0.7301480051480052*
 
@@ -684,60 +536,12 @@ comprensione più completa delle prestazioni.
 # Confronto Modelli Allenati
 ## Confronto curve ROC
 
-```python
-from sklearn.metrics import roc_curve, roc_auc_score
-import matplotlib.pyplot as plt
-
-# Decision Tree
-fpr_grid, tpr_grid, thresholds = roc_curve(y_test_binary1, y_pred_prob1)
-roc_auc_grid = roc_auc_score(y_test_binary1, y_pred_prob1)
-# SVM
-fpr_svm, tpr_svm, thresholds2 = roc_curve(y_test_binary2, y_pred_prob2)
-roc_auc_svm = roc_auc_score(y_test_binary2, y_pred_prob2)
-# Naive Bayes
-fpr_nb, tpr_nb, thresholds3 = roc_curve(y_test_binary3, y_pred_prob3)
-roc_auc_nb = roc_auc_score(y_test_binary3, y_pred_prob3)
-
-plt.plot(fpr_grid, tpr_grid, label='Decision Tree (area = %0.2f)' % roc_auc_grid)
-plt.plot(fpr_svm, tpr_svm, label='SVM (area = %0.2f)' % roc_auc_svm)
-plt.plot(fpr_nb, tpr_nb, label='Naive Bayes (area = %0.2f)' % roc_auc_nb)
-
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic (ROC) Curve')
-plt.legend(loc="lower right")
-plt.show()
-```
-
 
 <p align="center">
   <img src="images/curveRocFinal.png" width="100%">
 </p>
 
 ## Confronto intervalli di confidenza
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-mean_value1 = np.mean(confidence_interval1)
-plt.errorbar(0, mean_value1, yerr=(confidence_interval1[1] - confidence_interval1[0])/2, fmt='o', label='DecisionTree')
-
-mean_value2 = np.mean(confidence_interval2)
-plt.errorbar(1, mean_value2, yerr=(confidence_interval2[1] - confidence_interval2[0])/2, fmt='o', label='SVM')
-
-mean_value3 = np.mean(confidence_interval3)
-plt.errorbar(2, mean_value3, yerr=(confidence_interval3[1] - confidence_interval3[0])/2, fmt='o', label='Naive Bayes')
-
-plt.xlabel('Group')
-plt.ylabel('Value')
-plt.title('Mean with Confidence Interval')
-plt.legend()
-plt.show()
-```
-
 
 <p align="center">
   <img src="images/intervalloConfidenzaFinal.png" width="100%">
