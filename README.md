@@ -368,7 +368,7 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 
 Osserviamo dai risultati dell'allenamento:
 -Overfitting ridotto, il modello è in grado di generalizzare meglio e di adattarsi a nuovi dati, abbiamo infatti una differenza ridotta tra risultati di training e test set.
--Gridsearch applicata ci ha permesso di cercare gli iperparametri per avere un valore AUC ottimale e indirittamente ha ridotto l'overfitting del modello.
+-Gridsearch applicata ci ha permesso di cercare gli iperparametri per avere un valore AUC ottimale e indirettamente ha ridotto l'overfitting del modello.
 
 Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch infatti ha indirettamente semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
 
