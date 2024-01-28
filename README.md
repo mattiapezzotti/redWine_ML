@@ -401,9 +401,15 @@ In questa sezione alleniamo il modello SVM.
 
 Partiamo con allenare il modello senza tuning degli iperparametri:
 
-![](images/9.png)
+<p align="center">
+  <img src="images/9.png" width="100%">
+</p>
 
-![](images/Screenshot(75).png)
+
+<p align="center">
+  <img src="images/Screenshot(75).png" width="100%">
+</p>
+
 
 
 
@@ -426,9 +432,13 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 
 
 
-![](images/10.png)
+<p align="center">
+  <img src="images/10.png" width="100%">
+</p>
 
-![](images/Screenshot(76).png)
+<p align="center">
+  <img src="images/Screenshot(76).png" width="100%">
+</p>
 
 
 I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
@@ -481,7 +491,10 @@ print("Confusion Matrix:")
 print(conf_matrix_test)
 ```
 
-![](images/naiveBayesNoSmote.png)
+<p align="center">
+  <img src="images/naiveBayesNoSmote.png" width="100%">
+</p>
+
 
 ### Risultati sul set di addestramento:
 - Accuracy Score: Il modello ha ottenuto un'accuratezza del 78.33% sul set di addestramento, 
@@ -544,7 +557,10 @@ plt.show()
 print("AUC Score:", auc)
 ```
 
-![](images/naiveBayesCurvaRocWithSmote.png)
+<p align="center">
+  <img src="images/naiveBayesCurvaRocWithSmote.png" width="100%">
+</p>
+
 
 Con un AUC di 0.81, il modello ha una buona capacità predittiva, questo significa che ha una 
 buona capacità di distinguere tra le due classi (positiva e negativa) in base alle 
@@ -619,7 +635,10 @@ conf_matrix_test = confusion_matrix(y_test, y_test_pred)
 print("Confusion Matrix:")
 print(conf_matrix_test)
 ```
-![](images/naiveBayesGridSearch.png)
+
+<p align="center">
+  <img src="images/naiveBayesGridSearch.png" width="100%">
+</p>
 
 ### Risultati sul set di addestramento
 La precisione complessiva sul set di addestramento sembra buona, con un'accuracy del 78.9%.
@@ -668,7 +687,10 @@ plt.show()
 
 print("AUC Score:", auc)
 ```
-![](images/naiveBayesCurvaRocGridSearch.png)
+
+<p align="center">
+  <img src="images/naiveBayesCurvaRocGridSearch.png" width="100%">
+</p>
 
 L'aumento dell'AUC da 0.81 a 0.823 dopo l'applicazione di GridSearch indicare un 
 miglioramento marginale nelle prestazioni del modello Naive Bayes. Tuttavia, è importante notare 
@@ -737,7 +759,10 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 
-![](images/confrontoCurveROC.png)
+
+<p align="center">
+  <img src="images/confrontoCurveROC.png" width="100%">
+</p>
 
 ## Confronto intervalli di confidenza
 ```python
@@ -760,14 +785,20 @@ plt.legend()
 plt.show()
 ```
 
-![](images/confrontoIntervalliConfidenza.png)
+
+<p align="center">
+  <img src="images/confrontoIntervalliConfidenza.png" width="100%">
+</p>
 
 Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM 
 riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". 
 Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul 
 dataset. Tuttavia Naive Bayes perfoma meglio a livello di tempo:
 
-![](images/tempiEsecuzione.png)
+
+<p align="center">
+  <img src="images/tempiEsecuzione.png" width="100%">
+</p>
 
 # Conclusioni
 
