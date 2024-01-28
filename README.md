@@ -473,7 +473,7 @@ print(conf_matrix_test)
 ```
 
 <p align="center">
-  <img src="images/nbPrimaIterazione.png" width="100%">
+  <img src="images/primaIter.png" width="100%">
 </p>
 
 
