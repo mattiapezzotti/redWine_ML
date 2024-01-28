@@ -483,7 +483,7 @@ di falsi positivi e falsi negativi.
 ### Tuning degl'iperparametri con GridSearch
 
 Naive Bayes è noto per essere un modello con pochi iperparametri e, in alcuni casi, può non 
-beneficiare in modo significativo dall'uso di GridSearch per il tuning degli iperparametri. 
+beneficiare in modo significativo dall'uso di GridSearch. 
 Dato che utilizziamo un classificatore Naive Bayes Gaussiano, potrebbe essere interessante 
 regolare i parametri legati alla stima della varianza (var_smoothing).
 
@@ -519,13 +519,6 @@ generalizza decentemente ai dati di test.
   <img src="images/naiveBayesCurvaRocGridSearch.png" width="70%">
 </p>
 
-Il modello sembra generalizzare bene dal set di addestramento al set di test, poiché l'accuracy 
-e le metriche di precision, recall e F1-score sono coerenti tra i due set.
-L'accuracy è intorno al 73%, indicando una buona capacità predittiva complessiva del modello.
-La precision e la recall sono bilanciate, con valori simili per entrambe le classi, indicando 
-che il modello ha una buona capacità di distinguere tra le classi "bad" e "good".
-La matrice di confusione mostra che il modello è in grado di predire abbastanza accuratamente 
-sia le istanze "bad" che "good".
 
 La scelta del parametro 'var_smoothing' tramite GridSearch sembra aver migliorato di poco 
 le prestazioni del modello rispetto alla prima iterazione.
@@ -553,11 +546,9 @@ comprensione più completa delle prestazioni.
   <img src="images/intervalloConfidenzaFinal.png" width="70%">
 </p>
 
-Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM 
-riesce a distinguere con maggiore efficacia i vini "bad" da quelli "good". 
-Inoltre il confronto tra confidence level ci dimostra ancora come la SVM performa meglio sul 
-dataset. Tuttavia Naive Bayes perfoma meglio a livello di tempo:
+Osservando le curve ROC dei tre modelli su un unico diagramma, emerge che la SVM è particolarmente efficace nel distinguere i vini "bad" da quelli "good". Analizzando gli intervalli di confidenza, notiamo che l'ampiezza dell'intervallo della SVM si posiziona tra quella del Decision Tree e del Naive Bayes. Nonostante il Decision Tree abbia un intervallo più stretto, quello della SVM è comunque notevolmente buono.
 
+### Tempi di esecuzione
 
 <p align="center">
   <img src="images/tempiEsec.png" width="70%">
