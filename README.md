@@ -192,7 +192,11 @@ Notiamo che ci sono notevoli **Outlier** tra alcuni elementi, cosa che noi non v
 df["qualityRange"] = pd.cut(df["quality"], bins=[-np.inf, 4, 6, np.inf], labels=["3-4","5-6","7-8"])
 ```
 
-![](images/qualityCatCorrBox.png)
+
+<p align="center">
+  <img src="images/qualityCatCorrBox.png" width="50%">
+</p>
+
 
 ## PCA
 Il dataset è ovviamente di grande dimensioni (11), cerchiamo di trovare quali sono effettivamente utili cosi da ridurne la complessità.
