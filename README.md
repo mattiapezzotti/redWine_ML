@@ -364,7 +364,7 @@ Osserviamo dai risultati dell'allenamento:
 -Overfitting ridotto, il modello è in grado di generalizzare meglio e di adattarsi a nuovi dati, abbiamo infatti una differenza ridotta tra risultati di training e test set.
 -Gridsearch applicata ci ha permesso di cercare gli iperparametri per avere un valore AUC ottimale e indirittamente ha ridotto l'overfitting del modello.
 
-Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch infatti ha semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
+Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch infatti ha indirettamente semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
 
 Abbiamo misurato usando cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
 
@@ -392,11 +392,9 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
 </p>
 
 
+I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC e performance simili tra training set e test set.
 
-
-I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC, risultati considerando lo sbilanciamento del test set positivi.
-
-Tuttavia è possibile che sia presente underfitting e quindi alleniamo di nuovo il modello con GridSearch sempre cercando il migliore di AUC:
+Tuttavia è possibile che sia presente underfitting in quanto non abbiamo modificato gli iperparametri e quindi alleniamo di nuovo il modello con GridSearch sempre cercando il migliore di AUC:
 
 ### Gridsearch
 
@@ -426,9 +424,8 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 </p>
 
 
-I risultati ottenuti da quest'ultimo allenamento ci danno indicazione di un miglioramento nelle prestazioni del modello.
-
-La GridSearch ha cercato gli iperparametri migliori per ottenere un valore AUC ottimale, lavorando sul training set. Applicando questo nuovo modello sul test set non è detto che il valore di AUC che otteniamo sia per forza più elevato, tuttavia avendo la GridSearch lavorato su un set di dati più grande possiamo prendere il nuovo modello come migliorato.
+I risultati di quest'ultim iterazione ci dimostrano che gli iperparametri di default della SVM sono già i milgiori per quanto riguarda valore AUC.
+Il modello SVM allenato ad ogni modo ha un valore AUC sul test set di 0.82 che è buono. Questo ci indica che il modello distingue bene tra i vini "good" e i vini "bad".
 
 Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
 
