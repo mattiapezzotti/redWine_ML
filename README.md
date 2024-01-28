@@ -378,6 +378,12 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
   <img src="images/Screenshot(74).png" width="100%">
 </p>
 
+<p align="center">
+  <img src="images/dt.png" width="100%">
+</p>
+
+
+
 
 Osserviamo dai risultati dell'allenamento un netto miglioramento nella performance del modello:
 -Overfitting ridotto, il modello è in grado di generalizzare meglio e di adattarsi a nuovi dati.
@@ -438,6 +444,10 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 
 <p align="center">
   <img src="images/Screenshot(76).png" width="100%">
+</p>
+
+<p align="center">
+  <img src="images/vsm.png" width="100%">
 </p>
 
 
