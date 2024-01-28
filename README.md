@@ -350,7 +350,7 @@ Allenando di nuovo il modello otteniamo i seguenti risultati:
 
 
 <p align="center">
-  <img src="images/Screenshot(73).png)" width="100%">
+  <img src="images/Screenshot(73).png" width="100%">
 </p>
 
 Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance, che è perfetta, e test set possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi iperparametri per il modello. 
