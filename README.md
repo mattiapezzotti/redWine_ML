@@ -654,15 +654,16 @@ print("AUC Score:", auc)
   <img src="images/naiveBayesCurvaRocGridSearch.png" width="100%">
 </p>
 
-Il modello sembra generalizzare bene dal set di addestramento al set di test, poiché l'accuracy e le metriche di precision, recall e F1-score sono coerenti tra i due set.
+Il modello sembra generalizzare bene dal set di addestramento al set di test, poiché l'accuracy 
+e le metriche di precision, recall e F1-score sono coerenti tra i due set.
 L'accuracy è intorno al 73%, indicando una buona capacità predittiva complessiva del modello.
-La precision e la recall sono bilanciate, con valori simili per entrambe le classi, indicando che il modello ha una buona capacità di distinguere tra le classi "bad" e "good".
-La matrice di confusione mostra che il modello è in grado di predire abbastanza accuratamente sia le istanze "bad" che "good".
+La precision e la recall sono bilanciate, con valori simili per entrambe le classi, indicando 
+che il modello ha una buona capacità di distinguere tra le classi "bad" e "good".
+La matrice di confusione mostra che il modello è in grado di predire abbastanza accuratamente 
+sia le istanze "bad" che "good".
 
-La scelta del parametro 'var_smoothing' tramite GridSearch sembra aver migliorato di poco le prestazioni del modello rispetto alla prima iterazione.
-
-
-
+La scelta del parametro 'var_smoothing' tramite GridSearch sembra aver migliorato di poco 
+le prestazioni del modello rispetto alla prima iterazione.
 
 ### K-Fold Cross Validation
 ```python
@@ -687,7 +688,7 @@ accuracy_mean = np.mean(accuracy_k_fold_nb)
 print("Media dell'accuratezza:", accuracy_mean)
 ```
 
-*Media dell'accuratezza: 0.78906249*
+*Media dell'accuratezza: 0.7301480051480052*
 
 Il valore della media dell'accuratezza calcolata con la K-Fold cross validation da sola non fornisce
 un'immagine completa delle prestazioni del modello, specialmente se il dataset è sbilanciato. 
@@ -727,7 +728,7 @@ plt.show()
 
 
 <p align="center">
-  <img src="images/confrontoCurveROC.png" width="100%">
+  <img src="images/curveRocFinal.png" width="100%">
 </p>
 
 ## Confronto intervalli di confidenza
@@ -753,7 +754,7 @@ plt.show()
 
 
 <p align="center">
-  <img src="images/confrontoIntervalliConfidenza.png" width="100%">
+  <img src="images/intervalloConfidenzaFinal.png" width="100%">
 </p>
 
 Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM 
@@ -763,7 +764,7 @@ dataset. Tuttavia Naive Bayes perfoma meglio a livello di tempo:
 
 
 <p align="center">
-  <img src="images/tempiEsecuzione.png" width="100%">
+  <img src="images/tempiEsec.png" width="100%">
 </p>
 
 # Conclusioni
