@@ -440,16 +440,6 @@ Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che 
 
 ## Naive bayes
 
-A partire dal nostro training set bilanciato con l'utilizzo di SMOTE:
-```python
-X = newdf.iloc[:, :-1]
-y = newdf['qualityRange']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=15)
-
-smote = SMOTE()
-X_train, y_train = smote.fit_resample(X_train, y_train)
-```
-
 Iniziamo ad allenare il modello senza il tuning degl'iperparametri:
 
 ```python
@@ -483,39 +473,21 @@ print(conf_matrix_test)
 ```
 
 <p align="center">
-  <img src="images/naiveBayesNoSmote.png" width="100%">
+  <img src="images/nbPrimaIterazione.png" width="100%">
 </p>
 
 
-### Risultati sul set di addestramento:
-- Accuracy Score: Il modello ha ottenuto un'accuratezza del 78.33% sul set di addestramento, 
-indicando che è stato in grado di predire correttamente la classe di circa il 78.33% delle 
-osservazioni.
+### Considerazioni:
+I risultati dei sui due set suggeriscono che il modello ha una buona capacità di generalizzazione mantenendo un'equa performance tra le diverse classi.
 
-- Classification Report: L'analisi del report di classificazione mostra che il modello ha 
-una precisione, recall e f1-score di circa il 78% per entrambe le classi ("bad" e "good"). 
-La performance equilibrata suggerisce che il modello sta affrontando entrambe le classi in modo simile.
+- Accuracy Score: Il modello ha ottenuto un'accuratezza abbastanza alta sul set di 
+ addestramento e test, indicando che è stato in grado di predire correttamente le due classi.
 
-- Confusion Matrix: La matrice di confusione indica che il modello ha commesso alcuni errori 
-nella classificazione. Ad esempio, ha classificato erroneamente 228 osservazioni della classe
-"bad" come "good" e 188 osservazioni della classe "good" come "bad".
+- Classification Report: La precision, il recall e l'f1-score sono bilanciati per 
+ entrambe le classi ("bad" e "good"), con performance simili per le due categorie.
 
-### Risultati sul set di test:
-- Accuracy Score: Il modello ha ottenuto un'accuratezza del 75.83% sul set di test, 
-indicando che è stato in grado di predire correttamente la classe di circa il 75.83% 
-delle osservazioni.
-
-- Classification Report: Analizzando il report di classificazione sul set di test, 
-notiamo che il modello ha una precisione del 94% per la classe "bad", ma una 
-precisione del 29% per la classe "good". La bassa precisione per la classe "good" 
-suggerisce che il modello ha difficoltà a identificare bene la classe, questo
-è dovuto al fatto che il test set è sbilanciato (con la classe "good" in minoranza)
-perché solo il training set è stato bilanciato con l'uso di smote 
-(generalmente non si applica SMOTE al test set).
-
-- Confusion Matrix: La matrice mostra che il modello ha commesso errori nella 
-classificazione della classe "good", con 97 osservazioni erroneamente 
-classificate come "bad" e 19 osservazioni della classe "good" erroneamente classificate come "bad".
+- Accuracy Score: Il modello ha ottenuto un'accuratezza sul test set simile al training, 
+ indicando che è stato in grado di predire correttamente le classi.
 
 ### Receiver Operating Characteristic (ROC) Curve
 
@@ -549,14 +521,13 @@ print("AUC Score:", auc)
 ```
 
 <p align="center">
-  <img src="images/naiveBayesCurvaRocWithSmote.png" width="100%">
+  <img src="images/nbPrimaIterazioneAUC.png" width="100%">
 </p>
 
-
-Con un AUC di 0.81, il modello ha una buona capacità predittiva, questo significa che ha una 
-buona capacità di distinguere tra le due classi (positiva e negativa) in base alle 
-probabilità predette (un valore maggiore di 0.5 suggerisce che il modello sta 
-superando una classificazione casuale).
+Un AUC Score di 0.7975 suggerisce che il modello ha una buona capacità di discriminazione, 
+poiché si trova significativamente sopra la linea di base (AUC di 0.5). Tuttavia, potrebbe 
+essere utile esaminare il trade-off tra precision e recall e considerare l’importanza relativa 
+di falsi positivi e falsi negativi.
 
 ### Tuning degl'iperparametri con GridSearch
 
@@ -628,11 +599,11 @@ print(conf_matrix_test)
 ```
 
 <p align="center">
-  <img src="images/naiveBayesGridSearch.png" width="100%">
+  <img src="images/nbSecondaIterazioneReport.png" width="100%">
 </p>
 
 ### Risultati sul set di addestramento
-La precisione complessiva sul set di addestramento sembra buona, con un'accuracy del 78.9%.
+La precisione complessiva sul set di addestramento sembra buona.
 La matrice di confusione mostra che il modello ha una tendenza a classificare meglio la classe 
 "good" rispetto alla classe "bad", ma potrebbe esserci una certa confusione tra le classi, come 
 indicato dai falsi positivi e falsi negativi.
@@ -683,9 +654,13 @@ print("AUC Score:", auc)
   <img src="images/naiveBayesCurvaRocGridSearch.png" width="100%">
 </p>
 
-L'aumento dell'AUC da 0.81 a 0.823 dopo l'applicazione di GridSearch indicare un 
-miglioramento marginale nelle prestazioni del modello Naive Bayes. Tuttavia, è importante notare 
-che il miglioramento è relativamente modesto.
+Il modello sembra generalizzare bene dal set di addestramento al set di test, poiché l'accuracy e le metriche di precision, recall e F1-score sono coerenti tra i due set.
+L'accuracy è intorno al 73%, indicando una buona capacità predittiva complessiva del modello.
+La precision e la recall sono bilanciate, con valori simili per entrambe le classi, indicando che il modello ha una buona capacità di distinguere tra le classi "bad" e "good".
+La matrice di confusione mostra che il modello è in grado di predire abbastanza accuratamente sia le istanze "bad" che "good".
+
+La scelta del parametro 'var_smoothing' tramite GridSearch sembra aver migliorato di poco le prestazioni del modello rispetto alla prima iterazione.
+
 
 
 
