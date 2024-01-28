@@ -297,7 +297,7 @@ newdf = pd.concat([pcaData, df['qualityRange']], axis=1)
 Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo attributo "qualityRange".
 
 <p align="center">
-  <img src="images/1.png" width="100%">
+  <img src="images/1.png" width="70%">
 </p>
 
 ### Precision-Recall Curve
@@ -309,7 +309,7 @@ La curva ci informa sullo sbilanciamento del dataset. Più alto il valore della 
 
 
 <p align="center">
-  <img src="images/2.png" width="100%">
+  <img src="images/2.png" width="70%">
 </p>
 
 Come possiamo osservare otteniamo un valore AUC di 0.811 possiamo quindi dire che il dataset è abbastanza bilanciato. Non useremo quindi alcuna politica di oversampling o undersampling per bilanciare il dataset.
@@ -319,12 +319,12 @@ Come possiamo osservare otteniamo un valore AUC di 0.811 possiamo quindi dire ch
 Allenando il primo modello, il Decision Tree senza tuning degli iperparametri:
 
 <p align="center">
-  <img src="images/3.png" width="100%">
+  <img src="images/3.png" width="70%">
 </p>
 
 
 <p align="center">
-  <img src="images/1-1.png" width="100%">
+  <img src="images/1-1.png" width="70%">
 </p>
 
 ![](images/1-2.png)
@@ -349,16 +349,16 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 -max_depth: Profondità massima dell'albero. Limitare la profondità può contribuire a evitare l'overfitting.
 
 <p align="center">
-  <img src="images/4.png" width="100%">
+  <img src="images/4.png" width="70%">
 </p>
 
 
 <p align="center">
-  <img src="images/1-3.png" width="100%">
+  <img src="images/1-3.png" width="70%">
 </p>
 
 <p align="center">
-  <img src="images/1-5.png" width="100%">
+  <img src="images/1-5.png" width="70%">
 </p>
 
 ![](images/1-4.png)
@@ -375,11 +375,11 @@ Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione 
 Abbiamo misurato usando cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
 
 <p align="center">
-  <img src="images/5.png" width="100%">
+  <img src="images/5.png" width="70%">
 </p>
 
 <p align="center">
-  <img src="images/6.png" width="100%">
+  <img src="images/6.png" width="70%">
 </p>
 
 ## SVM
@@ -389,12 +389,12 @@ In questa sezione alleniamo il modello SVM.
 Partiamo con allenare il modello senza tuning degli iperparametri:
 
 <p align="center">
-  <img src="images/7.png" width="100%">
+  <img src="images/7.png" width="70%">
 </p>
 
 
 <p align="center">
-  <img src="images/1-6.png" width="100%">
+  <img src="images/1-6.png" width="70%">
 </p>
 
 ![](images/1-7.png)
@@ -419,15 +419,15 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 
 
 <p align="center">
-  <img src="images/8.png" width="100%">
+  <img src="images/8.png" width="70%">
 </p>
 
 <p align="center">
-  <img src="images/1-8.png" width="100%">
+  <img src="images/1-8.png" width="70%">
 </p>
 
 <p align="center">
-  <img src="images/1-9.png" width="100%">
+  <img src="images/1-9.png" width="70%">
 </p>
 
 ![](images/1-10.png)
@@ -444,7 +444,7 @@ Iniziamo ad allenare il modello senza il tuning degl'iperparametri:
 
 
 <p align="center">
-  <img src="images/primaIter.png" width="100%">
+  <img src="images/primaIter.png" width="70%">
 </p>
 
 
@@ -466,7 +466,7 @@ Procediamo a generare la curva ROC e il relativo valore di AUC:
 
 
 <p align="center">
-  <img src="images/nb1IterAUC.png" width="100%">
+  <img src="images/nb1IterAUC.png" width="70%">
 </p>
 
 Un AUC Score di 0.7975 suggerisce che il modello ha una buona capacità di discriminazione, 
@@ -494,7 +494,7 @@ garantendo una maggiore stabilità nel calcolo delle probabilità.
 
 
 <p align="center">
-  <img src="images/nbSecondaIterazioneReport.png" width="100%">
+  <img src="images/nbSecondaIterazioneReport.png" width="70%">
 </p>
 
 ### Risultati sul set di addestramento
@@ -510,7 +510,7 @@ generalizza decentemente ai dati di test.
 
 
 <p align="center">
-  <img src="images/naiveBayesCurvaRocGridSearch.png" width="100%">
+  <img src="images/naiveBayesCurvaRocGridSearch.png" width="70%">
 </p>
 
 Il modello sembra generalizzare bene dal set di addestramento al set di test, poiché l'accuracy 
@@ -538,13 +538,13 @@ comprensione più completa delle prestazioni.
 
 
 <p align="center">
-  <img src="images/curveRocFinal.png" width="100%">
+  <img src="images/curveRocFinal.png" width="70%">
 </p>
 
 ## Confronto intervalli di confidenza
 
 <p align="center">
-  <img src="images/intervalloConfidenzaFinal.png" width="100%">
+  <img src="images/intervalloConfidenzaFinal.png" width="70%">
 </p>
 
 Rappresentando le curve ROC dei tre modelli sullo stesso diagramma possiamo osservare come la SVM 
@@ -554,7 +554,7 @@ dataset. Tuttavia Naive Bayes perfoma meglio a livello di tempo:
 
 
 <p align="center">
-  <img src="images/tempiEsec.png" width="100%">
+  <img src="images/tempiEsec.png" width="70%">
 </p>
 
 # Conclusioni
