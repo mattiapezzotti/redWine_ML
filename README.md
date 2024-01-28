@@ -324,8 +324,11 @@ Allenando il primo modello, il Decision Tree senza tuning degli iperparametri:
 
 
 <p align="center">
-  <img src="images/Screenshot(73).png" width="100%">
+  <img src="images/1-1.png" width="100%">
 </p>
+
+![](images/1-2.png)
+
 
 I risultati sono positivi, tuttavia la training set performance è perfetta e molto diversa da quella del test set, questo ci indica che il modello molto probabilmente è caratterizzato da overfitting.
 
@@ -351,12 +354,14 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 
 
 <p align="center">
-  <img src="images/Screenshot(74).png" width="100%">
+  <img src="images/1-3.png" width="100%">
 </p>
 
 <p align="center">
-  <img src="images/dt.png" width="100%">
+  <img src="images/1-5.png" width="100%">
 </p>
+
+![](images/1-4.png)
 
 
 
@@ -389,9 +394,10 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
 
 
 <p align="center">
-  <img src="images/Screenshot(75).png" width="100%">
+  <img src="images/1-6.png" width="100%">
 </p>
 
+![](images/1-7.png)
 
 I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC e performance simili tra training set e test set.
 
@@ -417,12 +423,14 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 </p>
 
 <p align="center">
-  <img src="images/Screenshot(76).png" width="100%">
+  <img src="images/1-8.png" width="100%">
 </p>
 
 <p align="center">
-  <img src="images/vsm.png" width="100%">
+  <img src="images/1-9.png" width="100%">
 </p>
+
+![](images/1-10.png)
 
 
 I risultati di quest'ultim iterazione ci dimostrano che gli iperparametri di default della SVM sono già i milgiori per quanto riguarda valore AUC.
