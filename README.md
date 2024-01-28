@@ -1,7 +1,7 @@
 # Red Wine Quality
 
-[Link](https://github.com/mattiapezzotti/redWine_ML) alla repo del progetto su Github.
-[Link](https://docs.google.com/presentation/d/1yS_XVYV8o1SeP-sSjj_MmTjzXpVmW0dQCYPWyuINcmc/edit?usp=sharing) alla presentazione.
+Link https://github.com/mattiapezzotti/redWine_ML alla repo del progetto su Github.
+Link https://docs.google.com/presentation/d/1yS_XVYV8o1SeP-sSjj_MmTjzXpVmW0dQCYPWyuINcmc/edit?usp=sharing alla presentazione.
 
 
 ## Membri del Gruppo
@@ -11,7 +11,7 @@ Il Gruppo è formato da:
 - Alaa Eddine Ghanimi (856573) - a.ghanimi@campus.unimib.it
 
 ## Introduzione al Dataset
-[Link](https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009) al dataset su Kaggle.
+https://www.kaggle.com/datasets/uciml/red-wine-quality-cortez-et-al-2009 al dataset su Kaggle.
 
 Il dataset Red Wine Quality comprende una serie di proprietà fisiche e chimiche che rappresentano le caratteristiche dei vini rossi e che vengono utilizzate per determinarne la qualità.
 
