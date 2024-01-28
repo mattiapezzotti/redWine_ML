@@ -433,7 +433,7 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 ![](images/1-10.png)
 
 
-I risultati di quest'ultim iterazione ci dimostrano che gli iperparametri di default della SVM sono già i milgiori per quanto riguarda valore AUC.
+I risultati di quest'ultima iterazione ci dimostrano che gli iperparametri di default della SVM sono già i milgiori per quanto riguarda valore AUC.
 Il modello SVM allenato ad ogni modo ha un valore AUC sul test set di 0.82 che è buono. Questo ci indica che il modello distingue bene tra i vini "good" e i vini "bad".
 
 Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
@@ -521,7 +521,7 @@ print("AUC Score:", auc)
 ```
 
 <p align="center">
-  <img src="images/nbPrimaIterazioneAUC.png" width="100%">
+  <img src="images/nb1IterAUC.png" width="100%">
 </p>
 
 Un AUC Score di 0.7975 suggerisce che il modello ha una buona capacità di discriminazione, 
@@ -603,27 +603,13 @@ print(conf_matrix_test)
 </p>
 
 ### Risultati sul set di addestramento
-La precisione complessiva sul set di addestramento sembra buona.
-La matrice di confusione mostra che il modello ha una tendenza a classificare meglio la classe 
-"good" rispetto alla classe "bad", ma potrebbe esserci una certa confusione tra le classi, come 
-indicato dai falsi positivi e falsi negativi.
-
-### Risultati sul set di test
-Anche se l'accuracy sul set di test è del 71.25%, tale valore è fuorviante perchè il test set 
-è sbilanciato; bisogna analizzare le metriche precision, recall e f1-score. 
-
-La precisione per la classe "good" è bassa (26%), il che suggerisce 
-che il modello ha difficoltà a identificare correttamente questa classe. 
-Inoltre, il basso il recall per la classe "bad" (70%) indica che il modello ha 
-difficoltà a catturare tutti i casi di questa classe. 
-
-Come per il test precedente all'uso di GridSearch, questo è dovuto al fatto che il test set 
-è sbilanciato (con la classe "good" in minoranza) perché solo il training set è stato bilanciato 
-con l'uso di smote (generalmente non si applica SMOTE al test set).
-
-La matrice di confusione mostra che il modello ha una tendenza a predire più falsi positivi e 
-meno falsi negativi. Questo è sempre dovuto dal fatto che il test set
-non ha beneficiato dell'oversampling applicato al training set.
+Il modello sembra performare abbastanza bene su entrambi i set, con un'accuracy complessiva superiore al 73% sia sul 
+set di addestramento che su quello di test.
+La precision, recall e f1-score per entrambe le classi ("bad" e "good") sono ragionevolmente bilanciate.
+La confusion matrix mostra come il modello abbia alcuni falsi positivi e falsi negativi, ma nel complesso il numero 
+di predizioni corrette è significativo.
+In generale, questi risultati suggeriscono che il modello ha imparato abbastanza bene dai dati di addestramento e 
+generalizza decentemente ai dati di test.
 
 ### Receiver Operating Characteristic (ROC) Curve con GridSearch
 ```python
