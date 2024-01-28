@@ -756,9 +756,13 @@ dataset. Tuttavia Naive Bayes perfoma meglio a livello di tempo:
 # Conclusioni
 
 Abbiamo allenato tre modelli (Decision Tree, SVM e Naive Bayes) con buoni risultati. 
-Confrontandoli la SVM che abbiamo allenato performa meglio sul nostro set di dati sia dal punto 
-di vista di AUC (Area Under Curve) sia dal punto di vista di intervallo di accuratezza. 
-Tutto ciò però con un tempo di allenamento leggermente superiore rispetto al DecisionTree e a Naive Bayes. 
+Confrontandoli, a livello di AUC (Area Under Curve) la SVM che abbiamo allenato performa meglio rispetto a Decision Tree
+e Naive Bayes; inoltre analizzando anche l'intervallo di accuratezza si nota che performa abbastanza bene anche se non 
+è il migliore.
+
+Tutto ciò però con un tempo di allenamento leggermente superiore rispetto al DecisionTree ma uguale a Naive Bayes. 
 Nel contesto del nostro lavoro tuttavia questo non è importante, in quanto è preferibile una 
 migliore classificazione a partire dai dati di input rispetto a migliore performance al livello 
 di tempo.
+
+
