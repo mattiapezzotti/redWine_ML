@@ -462,7 +462,7 @@ I risultati dei sui due set suggeriscono che il modello ha una buona capacità d
 
 ### Receiver Operating Characteristic (ROC) Curve
 
-Procediamo, con il seguente codice, a generare la curva ROC e il relativo valore di AUC:
+Procediamo a generare la curva ROC e il relativo valore di AUC:
 
 
 <p align="center">
