@@ -227,7 +227,7 @@ newDF = PCA(n_components=8).fit_transform(scaled_data)
 
 # Applicazione dei modelli
 
-Possiamo utilizzare il lavoro svolto fino ad ora per allenare dei modelli che riescano a prevedere se un vino è "good" (quality da 7-8) o "bad" (quality da 3-6).
+Possiamo utilizzare il lavoro svolto fino ad ora per allenare dei modelli che riescano a prevedere se un vino è "good" (quality da 6-8) o "bad" (quality da 3-5).
 L'obiettivo è che il modello riesca a distinguere tra vini "good" e vini "bad", senza costi di errori diversi.
 
 
