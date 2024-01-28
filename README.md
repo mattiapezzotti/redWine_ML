@@ -279,6 +279,7 @@ dataset con un numero limitato di features come la composizione chimica del vino
 condizionata, Naive Bayes può offrire buone prestazioni quando la dipendenza tra le features non è dominante. Inoltre, 
 la gestione efficace di classi sbilanciate e la facilità di interpretazione lo rendono adatto per la classificazione in categorie discrete.
 
+### Scelta valore AUC come parametro di valutazione
 
 Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè il valore di AUC è utile durante l'allenamento per confrontare attraverso un dato scalare più modelli di apprendimento. Inoltre permette di avere una visione generale della performance del modello, riassumendo con una sola variabile la qualità generale del modello. 
 Abbiamo scelto di guardare il valore di AUC perchè il nostro dataset non è sbilanciato, fattore che potrebbe andare a impattare l'utilità del valore AUC. Inoltre non ci interessa nel nostro caso considerare costi di errore differenti.
@@ -333,7 +334,9 @@ Allenando il primo modello, il Decision Tree senza tuning degli iperparametri:
   <img src="images/1-1.png" width="70%">
 </p>
 
-![](images/1-2.png)
+<p align="center">
+  <img src="images/1-2.png" width="70%">
+</p>
 
 
 I risultati sono positivi, tuttavia la training set performance è perfetta e molto diversa da quella del test set, questo ci indica che il modello molto probabilmente è caratterizzato da overfitting.
@@ -367,7 +370,10 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
   <img src="images/1-5.png" width="70%">
 </p>
 
-![](images/1-4.png)
+<p align="center">
+  <img src="images/1-4.png" width="70%">
+</p>
+
 
 
 
@@ -403,7 +409,9 @@ Partiamo con allenare il modello senza tuning degli iperparametri:
   <img src="images/1-6.png" width="70%">
 </p>
 
-![](images/1-7.png)
+<p align="center">
+  <img src="images/1-7.png" width="70%">
+</p>
 
 I risultati ottenuti dall'allenamento sono decisamente buoni: buon valore di AUC e performance simili tra training set e test set.
 
@@ -436,7 +444,10 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
   <img src="images/1-9.png" width="70%">
 </p>
 
-![](images/1-10.png)
+<p align="center">
+  <img src="images/1-10.png" width="70%">
+</p>
+
 
 
 I risultati di quest'ultima iterazione ci dimostrano che gli iperparametri di default della SVM sono già i milgiori per quanto riguarda valore AUC.
