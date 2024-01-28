@@ -180,7 +180,9 @@ df.corr()['quality']
 
 Notiamo che ci sono delle **forti correlazioni** tra alcuni elementi e la qualità del vino, cosa che noi non vogliamo avere.
 
-![](images/qualityCorrBox.png)
+<p align="center">
+  <img src="images/qualityCorrBox.png" height="100%">
+</p>
 
 Notiamo che ci sono notevoli **Outlier** tra alcuni elementi, cosa che noi non vogliamo avere.
 
