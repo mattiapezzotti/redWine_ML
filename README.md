@@ -299,6 +299,10 @@ Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo a
 ### Primo allenamento DecisionTree
 Se proviamo ad allenare un modello DecisionTree senza tuning degli iperparametri otteniamo i seguenti risultati:
 
+<p align="center">
+  <img src="images/1.png" width="100%">
+</p>
+
 ![](images/1.png)
 
 Il modello ha dei risultati buoni per quanto riguarda le previsioni dei vini "bad", tuttavia fatica a riconoscere con accuratezza i vini di tipo "good".
