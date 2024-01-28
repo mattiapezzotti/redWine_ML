@@ -303,7 +303,6 @@ Se proviamo ad allenare un modello DecisionTree senza tuning degli iperparametri
   <img src="images/1.png" width="100%">
 </p>
 
-![](images/1.png)
 
 Il modello ha dei risultati buoni per quanto riguarda le previsioni dei vini "bad", tuttavia fatica a riconoscere con accuratezza i vini di tipo "good".
 Questo potrebbe essere dovuto dal fatto che il nostro dataset sia sbilanciato. Andremo quindi ad analizzare la curva precision-recall per avere un'idea migliore della situazione.
@@ -317,7 +316,10 @@ La curva Precision-Recall mostra il tradeoff tra precision e recall per diversi 
 
 Punteggi elevati per entrambi indicano che il classificatore restituisce risultati accurati (alta precisione) e restituisce la maggior parte di tutti i risultati positivi (alto richiamo). Tuttavia, nel nostro caso, per il target "good" abbiamo un valore basso sia per la recall che per la precision.
 
-![](images/2.png)
+
+<p align="center">
+  <img src="images/2.png" width="100%">
+</p>
 
 Un valore di AUC pari a 0.564 è considerato basso.
 
@@ -326,11 +328,15 @@ Il nostro dataset è quindi sbilanciato. Per risolvere questo problema si è dec
 
 Ribilanciando il training set evitiamo la contaminazione del processo di testing con dati sintetici.
 
-![](images/3.png)
+<p align="center">
+  <img src="images/3.png" width="100%">
+</p>
 
 Applichiamo quindi SMOTE al training set e otteniamo la seguente distribuzione sul training set:
 
-![](images/4.png)
+<p align="center">
+  <img src="images/4.png" width="100%">
+</p>
 
 Adesso che il nostro training set è bilanciato alleniamo il Decision Tree.
 
@@ -338,9 +344,14 @@ Adesso che il nostro training set è bilanciato alleniamo il Decision Tree.
 
 Allenando di nuovo il modello otteniamo i seguenti risultati:
 
-![](images/5.png)
+<p align="center">
+  <img src="images/5.png" width="100%">
+</p>
 
-![](images/Screenshot(73).png)
+
+<p align="center">
+  <img src="images/Screenshot(73).png)" width="100%">
+</p>
 
 Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance, che è perfetta, e test set possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi iperparametri per il modello. 
 
@@ -358,9 +369,14 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 
 -max_depth: Profondità massima dell'albero. Limitare la profondità può contribuire a evitare l'overfitting.
 
-![](images/6.png)
+<p align="center">
+  <img src="images/6.png" width="100%">
+</p>
 
-![](images/Screenshot(74).png)
+
+<p align="center">
+  <img src="images/Screenshot(74).png" width="100%">
+</p>
 
 
 Osserviamo dai risultati dell'allenamento un netto miglioramento nella performance del modello:
@@ -371,8 +387,13 @@ Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione 
 
 Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
 
-![](images/7.png)
-![](images/8.png)
+<p align="center">
+  <img src="images/7.png" width="100%">
+</p>
+
+<p align="center">
+  <img src="images/8.png" width="100%">
+</p>
 
 ## SVM
 
