@@ -273,20 +273,19 @@ condizionata, Naive Bayes può offrire buone prestazioni quando la dipendenza tr
 la gestione efficace di classi sbilanciate e la facilità di interpretazione lo rendono adatto per la classificazione in categorie discrete.
 
 
-Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè l'accuratezza potrebbe non essere una buona metrica su un dataset sbilanciato, che il nostro come vedremo sarà.
-Inoltre il valore AUC e la curva ROC tengono conto della trade-off tra tasso di vera positività e tasso di falsi positivi, una buona indicazione della performance dei nostri modelli. 
-Infine le curve ROC vedremo che ci saranno utili per fare confronti diretti tra i tre modelli allenati.
+Per l'allenamento mireremo ad avere i migliori valori AUC (Area Under Curve) possibili. Questo perchè il valore di AUC è utile durante l'allenamento per confrontare attraverso un dato scalare più modelli di apprendimento. Inoltre permette di avere una visione generale della performance del modello, riassumendo con una sola variabile la qualità generale del modello. 
+Abbiamo scelto di guardare il valore di AUC perchè il nostro dataset non è sbilanciato, fattore che potrebbe andare a impattare l'utilità del valore AUC. Inoltre non ci interessa nel nostro caso considerare costi di errore differenti.
 
 ## Preparazione dataframe
 
-Aggiungiamo la nuova colonna "qualityRange" al dataframe che attribuisce a ogni row "good"(7-8) o "bad"(3-6) in base al range in cui si trova il rating del vino in questione:
+Aggiungiamo la nuova colonna "qualityRange" al dataframe che attribuisce a ogni row "good"(6-8) o "bad"(3-5) in base al range in cui si trova il rating del vino in questione:
 
 ```python
 quality_mapping = {
     3: "bad",
     4: "bad",
     5: "bad",
-    6: "bad",
+    6: "good",
     7: "good",
     8: "good"
 }
@@ -296,56 +295,30 @@ newdf = pd.concat([pcaData, df['qualityRange']], axis=1)
 ```
 Così facendo otteniamo newdf che rappresenta pcaData con l'aggiunta del nuovo attributo "qualityRange".
 
-### Primo allenamento DecisionTree
-Se proviamo ad allenare un modello DecisionTree senza tuning degli iperparametri otteniamo i seguenti risultati:
-
 <p align="center">
-  <img src="images/1.png" width="100%">
+  <img src="images/2.png" width="100%">
 </p>
-
-
-Il modello ha dei risultati buoni per quanto riguarda le previsioni dei vini "bad", tuttavia fatica a riconoscere con accuratezza i vini di tipo "good".
-Questo potrebbe essere dovuto dal fatto che il nostro dataset sia sbilanciato. Andremo quindi ad analizzare la curva precision-recall per avere un'idea migliore della situazione.
-
-Inoltre dai risultati possiamo osservare come ci potrebbe essere overfitting: i risultati del training set sono infatti perfetti e molto diversi da quelli dei test set. Andrebbe quindi modificato il modello per ridurre l'overfitting.
-
-Inanzitutto eseguiamo un'ulteriore verifica analizzando la curva precision-recall.
 
 ### Precision-Recall Curve
 La curva Precision-Recall mostra il tradeoff tra precision e recall per diversi valori di soglia. Un'area sotto la curva (AUC) elevata rappresenta sia un alta recall sia un'alta precision, dove un'alta precision si riferisce a un basso tasso di falsi positivi e un alta recall si riferisce a un basso tasso di falsi negativi.
 
 Punteggi elevati per entrambi indicano che il classificatore restituisce risultati accurati (alta precisione) e restituisce la maggior parte di tutti i risultati positivi (alto richiamo). Tuttavia, nel nostro caso, per il target "good" abbiamo un valore basso sia per la recall che per la precision.
 
+La curva ci informa sullo sbilanciamento del dataset. Più alto il valore della area sotto la curva più è bilanciato il dataset.
+
 
 <p align="center">
-  <img src="images/2.png" width="100%">
+  <img src="images/1.png" width="100%">
 </p>
 
-Un valore di AUC pari a 0.564 è considerato basso.
-
-### Applicazione di SMOTE
-Il nostro dataset è quindi sbilanciato. Per risolvere questo problema si è deciso di attuare la politica di oversampling SMOTE in modo da ribilanciare il traininng set senza ripetere elementi già esistenti, ma creandone di nuovi.
-
-Ribilanciando il training set evitiamo la contaminazione del processo di testing con dati sintetici.
-
-<p align="center">
-  <img src="images/3.png" width="100%">
-</p>
-
-Applichiamo quindi SMOTE al training set e otteniamo la seguente distribuzione sul training set:
-
-<p align="center">
-  <img src="images/4.png" width="100%">
-</p>
-
-Adesso che il nostro training set è bilanciato alleniamo il Decision Tree.
+Come possiamo osservare otteniamo un valore AUC di 0.811 possiamo quindi dire che il dataset è abbastanza bilanciato. Non useremo quindi alcuna politica di oversampling o undersampling per bilanciare il dataset.
 
 ## DecisionTree
 
-Allenando di nuovo il modello otteniamo i seguenti risultati:
+Allenando il primo modello, il Decision Tree senza tuning degli iperparametri:
 
 <p align="center">
-  <img src="images/5.png" width="100%">
+  <img src="images/3.png" width="100%">
 </p>
 
 
@@ -353,11 +326,13 @@ Allenando di nuovo il modello otteniamo i seguenti risultati:
   <img src="images/Screenshot(73).png" width="100%">
 </p>
 
-Risultati del modello sono positivi per i vini "bad", tuttavia osservando nuovamente la perfetta training set performance e la differenza abbastanza grande tra training set performance, che è perfetta, e test set possiamo dedurre che il modello è caratterizzato da overfitting. Di conseguenza conviene trovare nuovi iperparametri per il modello. 
+I risultati sono positivi, tuttavia la training set performance è perfetta e molto diversa da quella del test set, questo ci indica che il modello molto probabilmente è caratterizzato da overfitting.
+
+Usiamo GridSearch che permette di trovare gli iperparametri per ottimizzare il valore di AUC.
 
 ### Gridsearch
 
-Usiamo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC. Cercheremo il migliore valore di AUC (Area Under Curve) perchè quando si affronta un dataset sbilanciato, l'accuratezza (accuracy) da sola potrebbe non essere la metrica più indicativa o informativa.
+Usiamo GridSearch che permette di trovare gli hyperparameters per ottimizzare il valore di AUC.
 
 Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 
@@ -370,7 +345,7 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 -max_depth: Profondità massima dell'albero. Limitare la profondità può contribuire a evitare l'overfitting.
 
 <p align="center">
-  <img src="images/6.png" width="100%">
+  <img src="images/4.png" width="100%">
 </p>
 
 
@@ -385,20 +360,20 @@ Andremo a prendere in considerazione qualche iperparametro del DecisionTree:
 
 
 
-Osserviamo dai risultati dell'allenamento un netto miglioramento nella performance del modello:
--Overfitting ridotto, il modello è in grado di generalizzare meglio e di adattarsi a nuovi dati.
--Gridsearch applicata ci ha permesso di cercare gli iperparametri per avere un valore AUC ottimale.
+Osserviamo dai risultati dell'allenamento:
+-Overfitting ridotto, il modello è in grado di generalizzare meglio e di adattarsi a nuovi dati, abbiamo infatti una differenza ridotta tra risultati di training e test set.
+-Gridsearch applicata ci ha permesso di cercare gli iperparametri per avere un valore AUC ottimale e indirittamente ha ridotto l'overfitting del modello.
 
-Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch ha semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
+Come si può vedere dalla visualizzazione degli alberi che segue, l'aplicazione della gridsearch infatti ha semplificato il Decision Tree, riducendo overfitting e migliorando di conseguenza il nostro modello.
 
-Abbiamo misurato usando k-fold cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
+Abbiamo misurato usando cross-validation l'intervallo di accuratezza che verrà utilizzato per il confronto finale dei tre modelli allenati.
 
 <p align="center">
-  <img src="images/7.png" width="100%">
+  <img src="images/5.png" width="100%">
 </p>
 
 <p align="center">
-  <img src="images/8.png" width="100%">
+  <img src="images/6.png" width="100%">
 </p>
 
 ## SVM
@@ -408,7 +383,7 @@ In questa sezione alleniamo il modello SVM.
 Partiamo con allenare il modello senza tuning degli iperparametri:
 
 <p align="center">
-  <img src="images/9.png" width="100%">
+  <img src="images/7.png" width="100%">
 </p>
 
 
@@ -439,7 +414,7 @@ Andremo a prendere in considerazione qualche iperparametro della VSM:
 
 
 <p align="center">
-  <img src="images/10.png" width="100%">
+  <img src="images/8.png" width="100%">
 </p>
 
 <p align="center">
